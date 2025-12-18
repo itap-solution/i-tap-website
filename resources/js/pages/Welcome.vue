@@ -19,6 +19,16 @@ watch(currentLanguage, (newLang) => {
     }
 }, { immediate: true })
 
+// Promo Modal
+const showPromoModal = ref(false)
+
+const closePromoModal = () => {
+    showPromoModal.value = false
+    // Save with today's date so it shows again tomorrow
+    const today = new Date().toDateString()
+    localStorage.setItem('promo-closed-date', today)
+}
+
 // ChatBot is automatically registered in Vue 3 Composition API
 import {
     Smartphone,
@@ -48,7 +58,9 @@ import {
     FileLock,
     Lock,
     FileCheck,
-    BadgeCheck
+    BadgeCheck,
+    X,
+    Sparkles
 } from 'lucide-vue-next'
 
 // Metaball Animation
@@ -233,6 +245,20 @@ onMounted(() => {
     setTimeout(() => {
         initMetaballAnimation();
     }, 100);
+    
+    // Show promo modal after a short delay
+    setTimeout(() => {
+        // Check if user has already closed the promo today
+        if (typeof window !== 'undefined') {
+            const today = new Date().toDateString()
+            const promoClosedDate = localStorage.getItem('promo-closed-date')
+            
+            // Show modal if never closed, or if closed on a different day
+            if (!promoClosedDate || promoClosedDate !== today) {
+                showPromoModal.value = true
+            }
+        }
+    }, 1500)
 })
 
 // Clean up animations when component unmounts
@@ -285,6 +311,46 @@ const partners = ref([
 
     <!-- Navigation Bar -->
     <NavBar />
+
+    <!-- Promo Modal -->
+    <Transition name="modal">
+        <div v-if="showPromoModal" 
+             class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+             @click.self="closePromoModal">
+            <div class="relative bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-3xl p-8 md:p-12 max-w-lg w-full shadow-2xl transform transition-all">
+                <!-- Close Button -->
+                <button @click="closePromoModal" 
+                        class="absolute top-4 right-4 text-white hover:text-gray-200 transition-colors z-10">
+                    <X class="w-6 h-6" />
+                </button>
+                
+                <!-- Content -->
+                <div class="text-center text-white">
+                    <!-- Icon/Emoji -->
+                    <div class="mb-6">
+                        <Sparkles class="w-16 h-16 mx-auto text-yellow-300 animate-pulse" />
+                    </div>
+                    
+                    <!-- Main Text -->
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6 leading-tight">
+                        عرض خاص لفترة محدودة: تطبيق أو موقع بـ 999 ريال
+                    </h2>
+                    
+                    <!-- CTA Button -->
+                    <a href="https://wa.me/966535815072?text=مرحباً، أريد الاستفادة من العرض الخاص لتطبيق أو موقع بـ 999 ريال" 
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="inline-block bg-white text-blue-600 font-bold px-8 py-4 rounded-full hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                        تواصل معنا
+                    </a>
+                </div>
+                
+                <!-- Decorative Elements -->
+                <div class="absolute top-0 left-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2"></div>
+                <div class="absolute bottom-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl translate-x-1/2 translate-y-1/2"></div>
+            </div>
+        </div>
+    </Transition>
 
     <div class="min-h-screen bg-white">
         <!-- Hero Section -->
@@ -1277,6 +1343,28 @@ const partners = ref([
 
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(59, 130, 246, 0.7);
+}
+
+/* Modal Transitions */
+.modal-enter-active,
+.modal-leave-active {
+    transition: opacity 0.3s ease;
+}
+
+.modal-enter-active .relative,
+.modal-leave-active .relative {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+    opacity: 0;
+}
+
+.modal-enter-from .relative,
+.modal-leave-to .relative {
+    transform: scale(0.9) translateY(-20px);
+    opacity: 0;
 }
 
 </style>

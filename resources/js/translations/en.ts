@@ -351,5 +351,10 @@ export const en = {
   contactBudgetDiscuss: "Let's Discuss",
   contactMessagePlaceholder: "Tell us about your project requirements...",
   contactThankYou: "Thank you for your message! We will get back to you soon.",
-  contactBusinessHoursNew: "All weekdays from 7 AM to 10 PM"
+  contactBusinessHoursNew: "All weekdays from 7 AM to 10 PM",
+  promoTitle: "Limited Time Offer!",
+  promoMessage: "Create your app or website for only 999 SAR",
+  promoSubtitle: "Now and for a limited time",
+  promoButton: "Get Started",
+  promoClose: "Close"
 }

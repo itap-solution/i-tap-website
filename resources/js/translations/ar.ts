@@ -351,5 +351,10 @@ export const ar = {
   contactBudgetDiscuss: "دعنا نناقش",
   contactMessagePlaceholder: "أخبرنا عن متطلبات مشروعك...",
   contactThankYou: "شكراً لرسالتك! سنتواصل معك قريباً.",
-  contactBusinessHoursNew: "طوال أيام الأسبوع من الساعة 7 صباحاً إلى الساعة 10 مساءً"
+  contactBusinessHoursNew: "طوال أيام الأسبوع من الساعة 7 صباحاً إلى الساعة 10 مساءً",
+  promoTitle: "عرض محدود!",
+  promoMessage: "أنشئ تطبيقك أو موقعك بـ 999 ريال فقط",
+  promoSubtitle: "الآن ولفترة محدودة",
+  promoButton: "ابدأ الآن",
+  promoClose: "إغلاق"
 }
