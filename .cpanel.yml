@@ -1,0 +1,49 @@
+---
+deployment:
+  tasks:
+    - export DEPLOY_PATH=$HOME/i-tap-website
+    - echo "========================================="
+    - echo "🚀 Starting Deployment Process..."
+    - echo "========================================="
+    - echo ""
+    
+    # Step 1: Install Composer Dependencies (Production only)
+    - echo "📦 Step 1: Installing Composer dependencies (production)..."
+    - /usr/local/bin/php /usr/local/bin/composer install --no-dev --no-interaction --optimize-autoloader
+    - echo "✅ Composer dependencies installed successfully"
+    - echo ""
+    
+    # Step 2: Install NPM Dependencies
+    - echo "📦 Step 2: Installing NPM dependencies..."
+    - npm install --production=false
+    - echo "✅ NPM dependencies installed successfully"
+    - echo ""
+    
+    # Step 3: Build Vue Project
+    - echo "🔨 Step 3: Building Vue project..."
+    - npm run build
+    - echo "✅ Vue project built successfully"
+    - echo ""
+    
+    # Step 4: Laravel Cache Operations
+    - echo "⚡ Step 4: Caching Laravel configuration..."
+    - /usr/local/bin/php artisan config:cache
+    - echo "✅ Config cache created"
+    - /usr/local/bin/php artisan route:cache
+    - echo "✅ Route cache created"
+    - /usr/local/bin/php artisan view:cache
+    - echo "✅ View cache created"
+    - echo ""
+    
+    # Step 5: Set proper permissions (if needed)
+    - echo "🔐 Step 5: Setting storage permissions..."
+    - chmod -R 775 storage bootstrap/cache || true
+    - echo "✅ Permissions set"
+    - echo ""
+    
+    # Final message
+    - echo "========================================="
+    - echo "✅ Deployment completed successfully!"
+    - echo "========================================="
+    - echo ""
+
