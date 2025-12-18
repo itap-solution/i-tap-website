@@ -52,7 +52,7 @@ class ChatController extends Controller
                 return $value !== null && $value !== '';
             });
 
-            // Handle additional_message specially (append to existing)
+            // Handle additional_message specially (append to existing))))
             if ($request->additional_message) {
                 $existingMessage = $chatResponse->additional_message;
                 $newMessage = $existingMessage ? $existingMessage . "\n\n" . $request->additional_message : $request->additional_message;
