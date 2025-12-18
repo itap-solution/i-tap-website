@@ -21,9 +21,33 @@ Route::get('/contact-us', function () {
     return Inertia::render('ContactUs');
 })->name('contact-us');
 
+Route::get('/services/web-development', function () {
+    return Inertia::render('WebDevelopment');
+})->name('web-development');
+
+Route::get('/services/mobile-development', function () {
+    return Inertia::render('MobileDevelopment');
+})->name('mobile-development');
+
+Route::get('/services/software-solutions', function () {
+    return Inertia::render('SoftwareSolutions');
+})->name('software-solutions');
+
+Route::get('/services/chatbot-automation', function () {
+    return Inertia::render('ChatbotAutomation');
+})->name('chatbot-automation');
+
 Route::get('/services/digital-marketing', function () {
     return Inertia::render('DigitalMarketing');
 })->name('digital-marketing');
+
+Route::get('/services/cloud-devops', function () {
+    return Inertia::render('CloudDevOps');
+})->name('cloud-devops');
+
+Route::get('/services/consulting', function () {
+    return Inertia::render('Consulting');
+})->name('consulting');
 
 Route::get('/chatbot', [App\Http\Controllers\ChatBotPageController::class, 'index'])->name('chatbot');
 

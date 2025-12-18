@@ -16,17 +16,13 @@
                     <div class="ml-10 flex items-baseline space-x-8">
                         <Link href="/"
                               :class="textColorClass + ' hover:text-gray-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-white/10'">
-                            Home
-                        </Link>
-                        <Link href="/portfolio"
-                              :class="textColorClass + ' hover:text-gray-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-white/10'">
-                            Projects
+                            {{ t('navHome') }}
                         </Link>
 
                         <!-- Services Dropdown -->
                         <div class="relative" @mouseenter="isServicesDropdownOpen = true" @mouseleave="isServicesDropdownOpen = false">
                             <button :class="textColorClass + ' hover:text-gray-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-white/10 flex items-center gap-1'">
-                                Services
+                                {{ t('navServices') }}
                                 <ChevronDown class="w-4 h-4 transition-transform duration-200" :class="isServicesDropdownOpen ? 'rotate-180' : ''" />
                             </button>
 
@@ -69,12 +65,39 @@
 
                         <Link href="/about-us"
                               :class="textColorClass + ' hover:text-gray-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-white/10'">
-                            About Us
+                            {{ t('navAbout') }}
                         </Link>
                         <Link href="/contact-us"
                               :class="textColorClass + ' hover:text-gray-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-white/10'">
-                            Contact Us
+                            {{ t('navContact') }}
                         </Link>
+                        
+                        <!-- Language Switcher -->
+                        <div class="relative" @mouseenter="isLanguageDropdownOpen = true" @mouseleave="isLanguageDropdownOpen = false">
+                            <button :class="textColorClass + ' hover:text-gray-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-white/10 flex items-center gap-2'">
+                                <Globe class="w-4 h-4" />
+                                <span class="hidden lg:inline">{{ currentLanguage === 'ar' ? 'العربية' : 'English' }}</span>
+                            </button>
+                            
+                            <!-- Language Dropdown -->
+                            <div v-show="isLanguageDropdownOpen"
+                                 class="absolute top-full right-0 mt-2 w-48 bg-white/98 backdrop-blur-xl border border-gray-200/50 rounded-xl shadow-lg z-50 overflow-hidden">
+                                <div class="py-2">
+                                    <button @click="changeLanguage('en')"
+                                            :class="['w-full text-left px-4 py-2 text-sm transition-colors duration-200 flex items-center gap-2', currentLanguage === 'en' ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-700 hover:bg-gray-50']">
+                                        <span class="text-lg">🇺🇸</span>
+                                        <span>English</span>
+                                        <span v-if="currentLanguage === 'en'" class="ml-auto text-blue-600">✓</span>
+                                    </button>
+                                    <button @click="changeLanguage('ar')"
+                                            :class="['w-full text-left px-4 py-2 text-sm transition-colors duration-200 flex items-center gap-2', currentLanguage === 'ar' ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-700 hover:bg-gray-50']">
+                                        <span class="text-lg">🇪🇬</span>
+                                        <span>العربية</span>
+                                        <span v-if="currentLanguage === 'ar'" class="ml-auto text-blue-600">✓</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -99,11 +122,7 @@
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 <Link href="/"
                       class="text-gray-900 hover:text-gray-700 block px-3 py-2 rounded-lg text-base font-medium transition-colors duration-200 hover:bg-gray-100">
-                    Home
-                </Link>
-                <Link href="/portfolio"
-                      class="text-gray-900 hover:text-gray-700 block px-3 py-2 rounded-lg text-base font-medium transition-colors duration-200 hover:bg-gray-100">
-                    Projects
+                    {{ t('navHome') }}
                 </Link>
 
                 <!-- Services Section for Mobile -->
@@ -135,12 +154,29 @@
 
                 <Link href="/about-us"
                       class="text-gray-900 hover:text-gray-700 block px-3 py-2 rounded-lg text-base font-medium transition-colors duration-200 hover:bg-gray-100">
-                    About Us
+                    {{ t('navAbout') }}
                 </Link>
                 <Link href="/contact-us"
                       class="text-gray-900 hover:text-gray-700 block px-3 py-2 rounded-lg text-base font-medium transition-colors duration-200 hover:bg-gray-100">
-                    Contact Us
+                    {{ t('navContact') }}
                 </Link>
+                
+                <!-- Language Switcher Mobile -->
+                <div class="px-3 py-2 border-t border-gray-200">
+                    <div class="text-gray-900 font-semibold text-sm mb-2">Language</div>
+                    <div class="flex gap-2">
+                        <button @click="changeLanguage('en')"
+                                :class="['flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center justify-center gap-2', currentLanguage === 'en' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200']">
+                            <span>🇺🇸</span>
+                            <span>English</span>
+                        </button>
+                        <button @click="changeLanguage('ar')"
+                                :class="['flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center justify-center gap-2', currentLanguage === 'ar' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200']">
+                            <span>🇪🇬</span>
+                            <span>العربية</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -148,8 +184,9 @@
 
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3'
-import { ref, computed } from 'vue'
-import { ChevronDown } from 'lucide-vue-next'
+import { ref, computed, onMounted, watch } from 'vue'
+import { ChevronDown, Globe } from 'lucide-vue-next'
+import { useLanguage } from '@/composables/useLanguage'
 
 interface Props {
     logoSrc?: string
@@ -165,6 +202,15 @@ const props = withDefaults(defineProps<Props>(), {
 
 const isMobileMenuOpen = ref(false)
 const isServicesDropdownOpen = ref(false)
+const isLanguageDropdownOpen = ref(false)
+
+// Use language composable
+const { currentLanguage, setLanguage, t } = useLanguage()
+
+const changeLanguage = (lang: 'ar' | 'en') => {
+    setLanguage(lang)
+    isLanguageDropdownOpen.value = false
+}
 
 const toggleMobileMenu = () => {
     isMobileMenuOpen.value = !isMobileMenuOpen.value

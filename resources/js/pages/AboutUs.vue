@@ -10,7 +10,7 @@
             <div class="max-w-7xl mx-auto text-center">
                 <div class="flex items-center justify-center gap-6 mb-6">
                     <h1 class="text-4xl md:text-6xl font-bold text-white">
-                        About
+                        {{ t('aboutTitle') }}
                     </h1>
                     <img src="/asset/Black_White_Minimal_Modern_Simple_Bold_Business_Mag_Logo__1_-removebg-preview.png"
                          alt="iTab Logo"
@@ -24,22 +24,16 @@
             <div class="max-w-7xl mx-auto">
                 <div class="grid lg:grid-cols-2 gap-12 items-center">
                     <div>
-                        <h2 class="text-3xl md:text-5xl font-bold text-gray-900 mb-8">Our Story</h2>
+                        <h2 class="text-3xl md:text-5xl font-bold text-gray-900 mb-8">{{ t('aboutOurStory') }}</h2>
                         <div class="space-y-6 text-lg text-gray-600 leading-relaxed">
                             <p>
-                                Founded in 2016, iTab started as a small team of passionate developers
-                                with a vision to revolutionize the software development industry. What began as a startup
-                                has grown into a trusted partner for businesses worldwide.
+                                {{ t('aboutStory1') }}
                             </p>
                             <p>
-                                Over the years, we've delivered 150+ successful projects, ranging from simple websites
-                                to complex enterprise applications. Our commitment to quality, innovation, and customer
-                                satisfaction has made us the go-to choice for businesses seeking digital transformation.
+                                {{ t('aboutStory2') }}
                             </p>
                             <p>
-                                Today, we continue to push the boundaries of technology, exploring new frontiers in
-                                artificial intelligence, machine learning, and cloud computing to deliver solutions
-                                that not only meet but exceed our clients' expectations.
+                                {{ t('aboutStory3') }}
                             </p>
                         </div>
                     </div>
@@ -59,8 +53,8 @@
         <section class="py-20 px-4 bg-gray-50">
             <div class="max-w-7xl mx-auto">
                 <div class="text-center mb-16">
-                    <h2 class="text-3xl md:text-5xl font-bold text-gray-900 mb-6">Meet Our Team</h2>
-                    <p class="text-xl text-gray-600">The talented individuals behind our success</p>
+                    <h2 class="text-3xl md:text-5xl font-bold text-gray-900 mb-6">{{ t('aboutMeetTeam') }}</h2>
+                    <p class="text-xl text-gray-600">{{ t('aboutTeamSubtitle') }}</p>
                 </div>
 
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -92,124 +86,58 @@
 
 
 
-               <!-- Footer -->
-               <footer class="bg-gray-900 text-white">
-                   <div class="max-w-7xl mx-auto px-4 py-16">
-                       <!-- Main Footer Content -->
-                       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-                           <!-- Company Info -->
-                           <div class="lg:col-span-2">
-                               <div class="flex items-center mb-6">
-                                   <img src="/asset/Black_White_Minimal_Modern_Simple_Bold_Business_Mag_Logo__1_-removebg-preview.png"
-                                        alt="iTab Logo"
-                                        class="h-56 w-auto -ml-8">
-                               </div>
-                               <p class="text-gray-300 mb-6 max-w-md leading-relaxed">
-                                   Leading software development company specializing in cutting-edge web and mobile applications.
-                                   We transform innovative ideas into digital excellence.
-                               </p>
-                               <div class="flex gap-4">
-                                   <Button variant="outline" size="sm" class="border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white hover:border-gray-500" asChild>
-                                       <a href="https://github.com/itab" target="_blank">
-                                           <Github class="w-4 h-4" />
-                                       </a>
-                                   </Button>
-                                   <Button variant="outline" size="sm" class="border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white hover:border-gray-500" asChild>
-                                       <a href="https://linkedin.com/company/itab" target="_blank">
-                                           <Linkedin class="w-4 h-4" />
-                                       </a>
-                                   </Button>
-                                   <Button variant="outline" size="sm" class="border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white hover:border-gray-500" asChild>
-                                       <a href="https://twitter.com/itab" target="_blank">
-                                           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                               <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                                           </svg>
-                                       </a>
-                                   </Button>
-                               </div>
-                           </div>
+        <!-- Footer -->
+        <footer class="bg-gray-900 text-white">
+            <div class="max-w-7xl mx-auto px-4 py-12">
+                <div class="flex flex-col items-center justify-center space-y-6">
+                    <!-- Company Name -->
+                    <div class="text-center">
+                        <h3 class="text-2xl font-bold text-white">{{ t('footerCompany') }}</h3>
+                    </div>
 
-                           <!-- Quick Links -->
-                           <div>
-                               <h4 class="text-lg font-semibold mb-6">Quick Links</h4>
-                               <ul class="space-y-3">
-                                   <li><Link href="/" class="text-gray-300 hover:text-white transition-colors">Home</Link></li>
-                                   <li><Link href="/portfolio" class="text-gray-300 hover:text-white transition-colors">Projects</Link></li>
-                                   <li><Link href="/about-us" class="text-gray-300 hover:text-white transition-colors">About Us</Link></li>
-                                   <li><Link href="/contact-us" class="text-gray-300 hover:text-white transition-colors">Contact</Link></li>
-                               </ul>
-                           </div>
+                    <!-- Social Media Links -->
+                    <div class="flex items-center gap-4">
+                        <a href="https://github.com/itab" target="_blank" rel="noopener noreferrer"
+                           class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <Github class="w-6 h-6" />
+                        </a>
+                        <a href="https://linkedin.com/company/itab" target="_blank" rel="noopener noreferrer"
+                           class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <Linkedin class="w-6 h-6" />
+                        </a>
+                        <a href="https://twitter.com/itab" target="_blank" rel="noopener noreferrer"
+                           class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                            </svg>
+                        </a>
+                    </div>
 
-                           <!-- Services -->
-                           <div>
-                               <h4 class="text-lg font-semibold mb-6">Services</h4>
-                               <ul class="space-y-3">
-                                   <li><span class="text-gray-300">Web Development</span></li>
-                                   <li><span class="text-gray-300">Mobile Apps</span></li>
-                                   <li><span class="text-gray-300">AI Solutions</span></li>
-                                   <li><span class="text-gray-300">Cloud Services</span></li>
-                                   <li><span class="text-gray-300">Consulting</span></li>
-                               </ul>
-                           </div>
-                       </div>
+                    <!-- Copyright -->
+                    <div class="text-gray-400 text-sm">
+                        {{ t('footerCopyright') }}
+                    </div>
+                </div>
+            </div>
+        </footer>
 
-                       <!-- Contact Info -->
-                       <div class="border-t border-gray-800 pt-8 mb-8">
-                           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                               <div class="flex items-center space-x-3">
-                                   <Mail class="w-5 h-5 text-blue-400" />
-                                   <div>
-                                       <p class="text-sm text-gray-400">Email</p>
-                                       <a href="mailto:contact@itab.com" class="text-white hover:text-blue-400 transition-colors">contact@itab.com</a>
-                                   </div>
-                               </div>
-                               <div class="flex items-center space-x-3">
-                                   <Mail class="w-5 h-5 text-blue-400" />
-                                   <div>
-                                       <p class="text-sm text-gray-400">Sales</p>
-                                       <a href="mailto:sales@itab.com" class="text-white hover:text-blue-400 transition-colors">sales@itab.com</a>
-                                   </div>
-                               </div>
-                               <div class="flex items-center space-x-3">
-                                   <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                   </svg>
-                                   <div>
-                                       <p class="text-sm text-gray-400">Location</p>
-                                       <span class="text-white">Global Remote</span>
-                                   </div>
-                               </div>
-                           </div>
-                       </div>
-
-                       <!-- Bottom Bar -->
-                       <div class="border-t border-gray-800 pt-8">
-                           <div class="flex flex-col md:flex-row justify-between items-center">
-                               <div class="text-gray-400 text-sm mb-4 md:mb-0">
-                                   © 2024 iTab. All rights reserved.
-                               </div>
-                               <div class="flex items-center space-x-6 text-sm">
-                                   <a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
-                                   <a href="#" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
-                                   <a href="#" class="text-gray-400 hover:text-white transition-colors">Cookie Policy</a>
-                               </div>
-                           </div>
-                       </div>
-                   </div>
-               </footer>
-
-               <!-- Chat Bot -->
-               <ChatBot />
+        <!-- WhatsApp Button -->
+        <a href="https://wa.me/966535815072" target="_blank" rel="noopener noreferrer"
+           class="fixed bottom-6 right-6 md:bottom-6 md:right-6 sm:bottom-4 sm:right-4 z-50 bg-green-500 hover:bg-green-600 text-white rounded-full p-4 md:p-6 shadow-lg transition-all duration-300 hover:scale-110"
+           style="z-index: 9999; width: 64px; height: 64px; display: flex; align-items: center; justify-content: center;">
+            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.388 5.983L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.89a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+        </a>
            </div>
        </template>
 
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3'
-import { ref } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { Button } from '@/components/ui/button'
 import NavBar from '@/components/NavBar.vue'
-import ChatBot from '@/components/ChatBot.vue'
+import { useLanguage } from '@/composables/useLanguage'
 import {
     Target,
     Users,
@@ -224,6 +152,20 @@ import {
     Mail
 } from 'lucide-vue-next'
 
+// Language support
+const { currentLanguage, setLanguage, t, isRTL } = useLanguage()
+
+// Watch language changes and update HTML dir attribute
+watch(currentLanguage, (newLang) => {
+    if (newLang === 'ar') {
+        document.documentElement.setAttribute('dir', 'rtl')
+        document.documentElement.setAttribute('lang', 'ar')
+    } else {
+        document.documentElement.setAttribute('dir', 'ltr')
+        document.documentElement.setAttribute('lang', 'en')
+    }
+}, { immediate: true })
+
 interface TeamMember {
     id: number
     name: string
@@ -232,13 +174,14 @@ interface TeamMember {
     image: string
     linkedin: string
     github: string
+    positionKey?: string
 }
 
-const teamMembers = ref<TeamMember[]>([
+const teamMembersData = [
     {
         id: 1,
         name: "Alex Johnson",
-        position: "CEO & Founder",
+        positionKey: 'aboutCEO',
         bio: "Visionary leader with 10+ years in software development and business strategy. Passionate about innovation and building world-class teams.",
         image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
         linkedin: "https://linkedin.com/in/alexjohnson",
@@ -247,7 +190,7 @@ const teamMembers = ref<TeamMember[]>([
     {
         id: 2,
         name: "Sarah Chen",
-        position: "CTO",
+        positionKey: 'aboutCTO',
         bio: "Technology expert specializing in scalable architectures and emerging technologies. Leads our technical vision and innovation initiatives.",
         image: "https://images.unsplash.com/photo-1494790108755-2616b612b775?w=400&h=400&fit=crop&crop=face",
         linkedin: "https://linkedin.com/in/sarahchen",
@@ -256,7 +199,7 @@ const teamMembers = ref<TeamMember[]>([
     {
         id: 3,
         name: "Michael Rodriguez",
-        position: "Lead Full Stack Developer",
+        positionKey: 'aboutLeadDeveloper',
         bio: "Full-stack expert with expertise in modern web technologies. Passionate about creating efficient, scalable solutions for complex business problems.",
         image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
         linkedin: "https://linkedin.com/in/michaelrodriguez",
@@ -265,7 +208,7 @@ const teamMembers = ref<TeamMember[]>([
     {
         id: 4,
         name: "Emily Davis",
-        position: "UI/UX Designer",
+        positionKey: 'aboutDesigner',
         bio: "Creative designer focused on user-centered design and creating beautiful, intuitive interfaces that enhance user experience.",
         image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
         linkedin: "https://linkedin.com/in/emilydavis",
@@ -274,7 +217,7 @@ const teamMembers = ref<TeamMember[]>([
     {
         id: 5,
         name: "David Thompson",
-        position: "DevOps Engineer",
+        positionKey: 'aboutDevOps',
         bio: "Infrastructure specialist ensuring reliable, scalable deployments. Expert in cloud technologies and automation processes.",
         image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face",
         linkedin: "https://linkedin.com/in/davidthompson",
@@ -283,11 +226,18 @@ const teamMembers = ref<TeamMember[]>([
     {
         id: 6,
         name: "Lisa Wang",
-        position: "Project Manager",
+        positionKey: 'aboutPM',
         bio: "Experienced project manager ensuring smooth delivery of complex projects. Expert in agile methodologies and client communication.",
         image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=400&fit=crop&crop=face",
         linkedin: "https://linkedin.com/in/lisawang",
         github: "https://github.com/lisawang"
     }
-])
+]
+
+const teamMembers = computed<TeamMember[]>(() => {
+    return teamMembersData.map(member => ({
+        ...member,
+        position: t(member.positionKey as any)
+    }))
+})
 </script>

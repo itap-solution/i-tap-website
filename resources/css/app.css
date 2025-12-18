@@ -171,3 +171,19 @@
 .museo-moderno {
     font-family: 'Museo Moderno', sans-serif;
 }
+
+/* Arabic Font - Cairo */
+[dir="rtl"],
+[lang="ar"],
+html[dir="rtl"] *,
+html[lang="ar"] * {
+    font-family: 'Cairo', 'Alfa Slab One', 'DM Serif Text', 'Ubuntu', sans-serif !important;
+}
+
+/* Ensure Arabic text uses Cairo font */
+[dir="rtl"] body,
+[lang="ar"] body,
+html[dir="rtl"] body,
+html[lang="ar"] body {
+    font-family: 'Cairo', sans-serif;
+}
