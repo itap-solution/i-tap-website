@@ -5,6 +5,7 @@ use App\Http\Controllers\ProjectController;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 use Inertia\Inertia;
 
 
@@ -118,6 +119,13 @@ Route::get('/api/projects/featured', [ProjectController::class, 'featured']);
 // Chat routes
 Route::post('/chat/store-response', [App\Http\Controllers\ChatController::class, 'storeResponse'])->name('chat.store');
 Route::get('/chat/responses', [App\Http\Controllers\ChatController::class, 'getResponses'])->name('chat.responses');
+
+Route::get('/run-migrate-123', function () {
+    Artisan::call('migrate --force');
+    Artisan::call('db:seed --force');
+
+    return 'Migrations & Seeders executed successfully';
+});
 
 require __DIR__.'/auth.php';
 require __DIR__.'/settings.php';
