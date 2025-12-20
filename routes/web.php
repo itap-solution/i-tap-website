@@ -9,7 +9,17 @@ use Inertia\Inertia;
 
 
 Route::get('/', function () {
-    return Inertia::render('Welcome');
+    $companyLogos = \App\Models\CompanyLogo::orderBy('order')->get()->map(function ($logo) {
+        return [
+            'id' => $logo->id,
+            'logo_url' => \Illuminate\Support\Facades\Storage::url($logo->logo_path),
+            'original_name' => $logo->original_name,
+        ];
+    });
+
+    return Inertia::render('Welcome', [
+        'companyLogos' => $companyLogos,
+    ]);
 })->name('home');
 
 
@@ -110,3 +120,4 @@ Route::post('/chat/store-response', [App\Http\Controllers\ChatController::class,
 Route::get('/chat/responses', [App\Http\Controllers\ChatController::class, 'getResponses'])->name('chat.responses');
 
 require __DIR__.'/auth.php';
+require __DIR__.'/settings.php';

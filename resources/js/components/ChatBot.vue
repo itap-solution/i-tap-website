@@ -8,7 +8,7 @@
             class="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 md:p-6 shadow-lg transition-all duration-300 hover:scale-110 overflow-hidden"
             style="z-index: 9999; position: fixed; bottom: 24px; right: 24px; background-color: #2563eb !important; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;"
         >
-            <img src="/asset/Black_White_Minimal_Modern_Simple_Bold_Business_Mag_Logo__1_-removebg-preview.png" alt="iTab Logo" class="w-16 h-16 md:w-18 md:h-18 object-cover" />
+            <img src="/asset/logo-new-white.png" alt="iTab Logo" class="w-16 h-16 md:w-18 md:h-18 object-cover" />
         </button>
 
         <!-- Chat Window -->
@@ -20,7 +20,7 @@
             <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-3 md:p-4 flex items-center justify-between">
                 <div class="flex items-center space-x-2 md:space-x-3">
                     <div class="w-8 h-8 md:w-10 md:h-10 bg-white/20 rounded-full flex items-center justify-center overflow-hidden">
-                        <img src="/asset/Black_White_Minimal_Modern_Simple_Bold_Business_Mag_Logo__1_-removebg-preview.png" alt="iTab Logo" class="w-full h-full object-cover" />
+                        <img src="/asset/logo-new-white.png" alt="iTab Logo" class="w-full h-full object-cover" />
                     </div>
                     <div>
                         <h3 class="font-semibold text-sm md:text-base">iTab Assistant</h3>

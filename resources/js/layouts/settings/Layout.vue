@@ -7,6 +7,10 @@ import { Link, usePage } from '@inertiajs/vue3';
 
 const sidebarNavItems: NavItem[] = [
     {
+        title: 'Company Logos',
+        href: '/settings/company-logos',
+    },
+    {
         title: 'Profile',
         href: '/settings/profile',
     },

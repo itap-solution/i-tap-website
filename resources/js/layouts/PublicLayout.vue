@@ -6,7 +6,7 @@ import ChatBot from '@/components/ChatBot.vue';
 <template>
     <div class="min-h-screen bg-black">
         <!-- Navigation Bar -->
-        <NavBar logoSrc="/asset/Black_White_Minimal_Modern_Simple_Bold_Business_Mag_Logo__1_-removebg-preview.png" textColor="white" backgroundColor="black" />
+        <NavBar logoSrc="/asset/logo-new-white.png" textColor="white" backgroundColor="black" />
 
         <!-- Main Content -->
         <main>

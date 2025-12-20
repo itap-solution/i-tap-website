@@ -1,12 +1,13 @@
 <?php
 
+use App\Http\Controllers\Settings\CompanyLogoController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::middleware('auth')->group(function () {
-    Route::redirect('settings', '/settings/profile');
+    Route::redirect('settings', '/settings/company-logos');
 
     Route::get('settings/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('settings/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -21,4 +22,8 @@ Route::middleware('auth')->group(function () {
     Route::get('settings/appearance', function () {
         return Inertia::render('settings/Appearance');
     })->name('appearance');
+
+    Route::get('settings/company-logos', [CompanyLogoController::class, 'index'])->name('company-logos.index');
+    Route::post('settings/company-logos', [CompanyLogoController::class, 'store'])->name('company-logos.store');
+    Route::delete('settings/company-logos/{companyLogo}', [CompanyLogoController::class, 'destroy'])->name('company-logos.destroy');
 });

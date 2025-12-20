@@ -272,7 +272,7 @@ const useCases = [
     <div class="min-h-screen bg-white">
         <!-- Navigation -->
         <NavBar
-            logoSrc="/asset/Black_White_Minimal_Modern_Simple_Bold_Business_Mag_Logo__1_-removebg-preview.png"
+            logoSrc="/asset/logo-new-white.png"
             textColor="text-white"
             backgroundColor="bg-transparent"
         />
@@ -403,7 +403,7 @@ const useCases = [
                     <!-- Company Info -->
                     <div class="md:col-span-2">
                         <div class="flex items-center gap-4 mb-6">
-                            <img src="/asset/Black_White_Minimal_Modern_Simple_Bold_Business_Mag_Logo__1_-removebg-preview.png"
+                            <img src="/asset/logo-new-white.png"
                                  alt="iTab Logo"
                                  class="h-56 w-auto -ml-8">
                         </div>

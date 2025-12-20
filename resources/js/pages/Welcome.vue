@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3'
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import NavBar from '@/components/NavBar.vue'
 import { useLanguage } from '@/composables/useLanguage'
 // import ChatBot from '@/components/ChatBot.vue' // Temporarily hidden
@@ -19,23 +19,11 @@ watch(currentLanguage, (newLang) => {
     }
 }, { immediate: true })
 
-// Promo Modal
-const showPromoModal = ref(false)
-
-const closePromoModal = () => {
-    showPromoModal.value = false
-    // Save with today's date so it shows again tomorrow
-    const today = new Date().toDateString()
-    localStorage.setItem('promo-closed-date', today)
-}
-
 // ChatBot is automatically registered in Vue 3 Composition API
 import {
     Smartphone,
     Globe,
     Zap,
-    Github,
-    Linkedin,
     MessageCircle,
     Award,
     Users,
@@ -58,9 +46,7 @@ import {
     FileLock,
     Lock,
     FileCheck,
-    BadgeCheck,
-    X,
-    Sparkles
+    BadgeCheck
 } from 'lucide-vue-next'
 
 // Metaball Animation
@@ -245,20 +231,6 @@ onMounted(() => {
     setTimeout(() => {
         initMetaballAnimation();
     }, 100);
-    
-    // Show promo modal after a short delay
-    setTimeout(() => {
-        // Check if user has already closed the promo today
-        if (typeof window !== 'undefined') {
-            const today = new Date().toDateString()
-            const promoClosedDate = localStorage.getItem('promo-closed-date')
-            
-            // Show modal if never closed, or if closed on a different day
-            if (!promoClosedDate || promoClosedDate !== today) {
-                showPromoModal.value = true
-            }
-        }
-    }, 1500)
 })
 
 // Clean up animations when component unmounts
@@ -271,39 +243,29 @@ onUnmounted(() => {
     }
 })
 
-// Partners data
-const partners = ref([
-    {
-        name: 'Microsoft',
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg',
-        website: 'https://microsoft.com'
-    },
-    {
-        name: 'Google',
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg',
-        website: 'https://google.com'
-    },
-    {
-        name: 'Amazon',
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg',
-        website: 'https://amazon.com'
-    },
-    {
-        name: 'Apple',
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg',
-        website: 'https://apple.com'
-    },
-    {
-        name: 'Meta',
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg',
-        website: 'https://meta.com'
-    },
-    {
-        name: 'Netflix',
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg',
-        website: 'https://netflix.com'
+interface CompanyLogo {
+    id: number;
+    logo_url: string;
+    original_name: string | null;
+}
+
+interface Props {
+    companyLogos?: CompanyLogo[];
+}
+
+const props = defineProps<Props>();
+
+// Partners data - use company logos from database if available, otherwise use empty array
+const partners = computed(() => {
+    if (props.companyLogos && props.companyLogos.length > 0) {
+        return props.companyLogos.map(logo => ({
+            name: logo.original_name || 'Partner',
+            logo: logo.logo_url,
+            website: '#'
+        }));
     }
-]);
+    return [];
+});
 </script>
 
 <template>
@@ -311,46 +273,6 @@ const partners = ref([
 
     <!-- Navigation Bar -->
     <NavBar />
-
-    <!-- Promo Modal -->
-    <Transition name="modal">
-        <div v-if="showPromoModal" 
-             class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-             @click.self="closePromoModal">
-            <div class="relative bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-3xl p-8 md:p-12 max-w-lg w-full shadow-2xl transform transition-all">
-                <!-- Close Button -->
-                <button @click="closePromoModal" 
-                        class="absolute top-4 right-4 text-white hover:text-gray-200 transition-colors z-10">
-                    <X class="w-6 h-6" />
-                </button>
-                
-                <!-- Content -->
-                <div class="text-center text-white">
-                    <!-- Icon/Emoji -->
-                    <div class="mb-6">
-                        <Sparkles class="w-16 h-16 mx-auto text-yellow-300 animate-pulse" />
-                    </div>
-                    
-                    <!-- Main Text -->
-                    <h2 class="text-3xl md:text-4xl font-bold mb-6 leading-tight">
-                        عرض خاص لفترة محدودة: تطبيق أو موقع بـ 999 ريال
-                    </h2>
-                    
-                    <!-- CTA Button -->
-                    <a href="https://wa.me/966535815072?text=مرحباً، أريد الاستفادة من العرض الخاص لتطبيق أو موقع بـ 999 ريال" 
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       class="inline-block bg-white text-blue-600 font-bold px-8 py-4 rounded-full hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg">
-                        تواصل معنا
-                    </a>
-                </div>
-                
-                <!-- Decorative Elements -->
-                <div class="absolute top-0 left-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2"></div>
-                <div class="absolute bottom-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl translate-x-1/2 translate-y-1/2"></div>
-            </div>
-        </div>
-    </Transition>
 
     <div class="min-h-screen bg-white">
         <!-- Hero Section -->
@@ -366,7 +288,7 @@ const partners = ref([
                         <div class="mb-12">
                             <h2 class="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-8 leading-tight text-center museo-moderno">
                                 {{ t('heroTitle') }}<br>
-                                <span style="color: #ffdc4f;">{{ t('heroTitleHighlight') }}</span>
+                                <span style="color: #ff751f;">{{ t('heroTitleHighlight') }}</span>
                             </h2>
                             <p class="text-2xl md:text-3xl lg:text-4xl text-gray-300 leading-relaxed text-center">
                                 {{ t('heroSubtitle') }}
@@ -433,32 +355,24 @@ const partners = ref([
                     </p>
                 </div>
 
-                <!-- Partners Scrolling Animation -->
-                <div class="relative overflow-hidden">
-                    <div class="flex animate-scroll">
-                        <!-- First set of partners -->
-                        <div v-for="partner in partners" :key="`first-${partner.name}`"
-                             class="group flex items-center justify-center p-6 hover:scale-105 transition-all duration-300 flex-shrink-0 mx-4">
-                            <a :href="partner.website" target="_blank" rel="noopener noreferrer"
-                               class="flex items-center justify-center w-32 h-16">
-                                <img :src="partner.logo"
-                                     :alt="`${partner.name} logo`"
-                                     class="max-h-12 max-w-full object-contain"
-                                     loading="lazy">
-                            </a>
-                        </div>
-                        <!-- Duplicate set for seamless loop -->
-                        <div v-for="partner in partners" :key="`second-${partner.name}`"
-                             class="group flex items-center justify-center p-6 hover:scale-105 transition-all duration-300 flex-shrink-0 mx-4">
-                            <a :href="partner.website" target="_blank" rel="noopener noreferrer"
-                               class="flex items-center justify-center w-32 h-16">
-                                <img :src="partner.logo"
-                                     :alt="`${partner.name} logo`"
-                                     class="max-h-12 max-w-full object-contain"
-                                     loading="lazy">
-                            </a>
-                        </div>
+                <!-- Partners Grid -->
+                <div v-if="partners.length > 0" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-8 md:gap-12">
+                    <div 
+                        v-for="partner in partners" 
+                        :key="partner.logo"
+                        class="group flex items-center justify-center p-4 transition-all duration-300 hover:scale-110"
+                    >
+                        <img 
+                            :src="partner.logo"
+                            :alt="`${partner.name} logo`"
+                            class="max-h-20 max-w-full object-contain opacity-80 group-hover:opacity-100 transition-all duration-300"
+                            loading="lazy"
+                        >
                     </div>
+                </div>
+                <!-- Empty State -->
+                <div v-else class="text-center py-12 text-gray-500">
+                    <p>No company logos available yet.</p>
                 </div>
 
                 <!-- Trust Badge -->
@@ -1255,28 +1169,49 @@ const partners = ref([
         <footer class="bg-gray-900 text-white">
             <div class="max-w-7xl mx-auto px-4 py-12">
                 <div class="flex flex-col items-center justify-center space-y-6">
-                    <!-- Company Name -->
+                    <!-- Company Logo -->
                     <div class="text-center">
-                        <h3 class="text-2xl font-bold text-white">{{ t('footerCompany') }}</h3>
+                        <Link href="/" class="flex items-center justify-center">
+                            <img src="/asset/logo-new-white.png"
+                                 alt="iTab Logo"
+                                 class="h-16 w-auto">
+                        </Link>
                     </div>
 
                     <!-- Social Media Links -->
                     <div class="flex items-center gap-4">
-                        <a href="https://github.com/itab" target="_blank" rel="noopener noreferrer"
-                           class="text-gray-400 hover:text-white transition-colors duration-200">
-                            <Github class="w-6 h-6" />
-                        </a>
-                        <a href="https://linkedin.com/company/itab" target="_blank" rel="noopener noreferrer"
-                           class="text-gray-400 hover:text-white transition-colors duration-200">
-                            <Linkedin class="w-6 h-6" />
-                        </a>
-                        <a href="https://twitter.com/itab" target="_blank" rel="noopener noreferrer"
-                           class="text-gray-400 hover:text-white transition-colors duration-200">
+                        <!-- Facebook -->
+                        <a href="https://www.facebook.com/profile.php?id=61585174361896" target="_blank" rel="noopener noreferrer"
+                           class="text-gray-400 hover:text-blue-500 transition-colors duration-200">
                             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                                    </svg>
-                            </a>
-                        </div>
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                        </a>
+
+                        <!-- Instagram -->
+                        <a href="https://www.instagram.com/itap_solution/" target="_blank" rel="noopener noreferrer"
+                           class="text-gray-400 hover:text-pink-500 transition-colors duration-200">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+
+                        <!-- TikTok -->
+                        <a href="https://www.tiktok.com" target="_blank" rel="noopener noreferrer"
+                           class="text-gray-400 hover:text-black transition-colors duration-200">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                            </svg>
+                        </a>
+
+                        <!-- LinkedIn -->
+                        <a href="https://www.linkedin.com/company/itap-solution" target="_blank" rel="noopener noreferrer"
+                           class="text-gray-400 hover:text-blue-600 transition-colors duration-200">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                        </a>
+                    </div>
 
                     <!-- Copyright -->
                     <div class="text-gray-400 text-sm">
@@ -1307,25 +1242,6 @@ const partners = ref([
     animation: float 3s ease-in-out infinite;
 }
 
-@keyframes scroll {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(-50%);
-    }
-}
-
-.animate-scroll {
-    animation: scroll 30s linear infinite;
-    display: flex;
-    width: 200%;
-}
-
-.animate-scroll:hover {
-    animation-play-state: paused;
-}
-
 /* Custom scrollbar for the modal */
 ::-webkit-scrollbar {
     width: 6px;
@@ -1343,28 +1259,6 @@ const partners = ref([
 
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(59, 130, 246, 0.7);
-}
-
-/* Modal Transitions */
-.modal-enter-active,
-.modal-leave-active {
-    transition: opacity 0.3s ease;
-}
-
-.modal-enter-active .relative,
-.modal-leave-active .relative {
-    transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.modal-enter-from,
-.modal-leave-to {
-    opacity: 0;
-}
-
-.modal-enter-from .relative,
-.modal-leave-to .relative {
-    transform: scale(0.9) translateY(-20px);
-    opacity: 0;
 }
 
 </style>

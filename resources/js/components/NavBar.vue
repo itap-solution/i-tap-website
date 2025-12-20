@@ -195,7 +195,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    logoSrc: '/asset/Black_White_Minimal_Modern_Simple_Bold_Business_Mag_Logo__1_-removebg-preview.png',
+    logoSrc: '/asset/logo-new-white.png',
     textColor: 'white',
     backgroundColor: 'transparent'
 })
