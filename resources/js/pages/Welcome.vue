@@ -3,6 +3,8 @@ import { Head, Link } from '@inertiajs/vue3'
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import NavBar from '@/components/NavBar.vue'
 import { useLanguage } from '@/composables/useLanguage'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 // import ChatBot from '@/components/ChatBot.vue' // Temporarily hidden
 
 // Language support
@@ -46,202 +48,131 @@ import {
     FileLock,
     Lock,
     FileCheck,
-    BadgeCheck
+    BadgeCheck,
+    Sparkles,
+    ArrowRight,
+    Monitor,
+    MessageSquare,
+    TrendingUp,
+    Package,
+    Target,
+    Wrench,
+    Headphones
 } from 'lucide-vue-next'
 
-// Metaball Animation
-let metaballCanvas: HTMLCanvasElement | null = null;
-let metaballGl: WebGLRenderingContext | null = null;
-let metaballProgram: WebGLProgram | null = null;
-let metaballAnimationId: number | null = null;
+// Animation state
+const floatingIcons = [
+    { icon: Sparkles, color: 'from-yellow-400 to-orange-500', delay: 0 },
+    { icon: Zap, color: 'from-blue-400 to-cyan-500', delay: 0.5 },
+    { icon: Shield, color: 'from-purple-400 to-pink-500', delay: 1 },
+]
 
-const numMetaballs = 30;
-const metaballs: Array<{x: number, y: number, vx: number, vy: number, r: number}> = [];
+// Services data
+const services = [
+    {
+        icon: Smartphone,
+        title: 'برمجة تطبيقات الهاتف',
+        description: 'تطبيقات iOS و Android احترافية بأحدث التقنيات',
+    },
+    {
+        icon: Monitor,
+        title: 'برمجة المواقع',
+        description: 'مواقع ويب سريعة وعصرية بتصميم متجاوب',
+    },
+    {
+        icon: MessageSquare,
+        title: 'شات بوت',
+        description: 'حلول ذكية للتواصل الآلي مع عملائك',
+    },
+    {
+        icon: TrendingUp,
+        title: 'التسويق الرقمي',
+        description: 'استراتيجيات تسويقية فعالة لنمو أعمالك',
+    },
+]
 
-function initMetaballAnimation() {
-  metaballCanvas = document.getElementById('metaball-canvas') as HTMLCanvasElement;
-  if (!metaballCanvas) return;
+// Ready Projects data
+const readyProjects = [
+    {
+        title: 'متجر إلكتروني متكامل',
+        description: 'نظام متجر إلكتروني بلوحة تحكم ونظام دفع',
+        price: '5,000',
+        image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&q=80',
+        features: ['لوحة تحكم', 'نظام دفع', 'إدارة المنتجات', 'تطبيق موبايل'],
+    },
+    {
+        title: 'نظام حجز مواعيد',
+        description: 'تطبيق حجز مواعيد للعيادات والصالونات',
+        price: '3,500',
+        image: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80',
+        features: ['تقويم مواعيد', 'إشعارات تلقائية', 'إدارة العملاء', 'تقارير'],
+    },
+    {
+        title: 'منصة تعليمية',
+        description: 'نظام LMS لإدارة الدورات والطلاب',
+        price: '7,000',
+        image: 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=800&q=80',
+        features: ['إدارة الدورات', 'اختبارات', 'شهادات', 'بث مباشر'],
+    },
+]
 
-  const width = metaballCanvas.width = window.innerWidth;
-  const height = metaballCanvas.height = window.innerHeight;
+// Goals data
+const goals = [
+    {
+        icon: Users,
+        number: '500+',
+        label: 'عميل راضٍ',
+    },
+    {
+        icon: Sparkles,
+        number: '1000+',
+        label: 'مشروع منجز',
+    },
+    {
+        icon: TrendingUp,
+        number: '98%',
+        label: 'نسبة النجاح',
+    },
+    {
+        icon: Target,
+        number: '24/7',
+        label: 'دعم فني',
+    },
+]
 
-  metaballGl = metaballCanvas.getContext('webgl');
-  if (!metaballGl) return;
-
-  // Initialize metaballs
-  for (let i = 0; i < numMetaballs; i++) {
-    const radius = Math.random() * 60 + 10;
-    metaballs.push({
-      x: Math.random() * (width - 2 * radius) + radius,
-      y: Math.random() * (height - 2 * radius) + radius,
-      vx: (Math.random() - 0.5) * 3,
-      vy: (Math.random() - 0.5) * 3,
-      r: radius * 0.75
-    });
-  }
-
-  const vertexShaderSrc = `
-    attribute vec2 position;
-    void main() {
-      gl_Position = vec4(position, 0.0, 1.0);
-    }
-  `;
-
-  const fragmentShaderSrc = `
-    precision highp float;
-    const float WIDTH = ${width}.0;
-    const float HEIGHT = ${height}.0;
-    uniform vec3 metaballs[${numMetaballs}];
-
-    void main(){
-      float x = gl_FragCoord.x;
-      float y = gl_FragCoord.y;
-
-      float sum = 0.0;
-      for (int i = 0; i < ${numMetaballs}; i++) {
-        vec3 metaball = metaballs[i];
-        float dx = metaball.x - x;
-        float dy = metaball.y - y;
-        float radius = metaball.z;
-
-        sum += (radius * radius) / (dx * dx + dy * dy);
-      }
-
-      if (sum >= 0.99) {
-        gl_FragColor = vec4(mix(vec3(x / WIDTH, y / HEIGHT, 1.0), vec3(0, 0, 0), max(0.0, 1.0 - (sum - 0.99) * 100.0)), 1.0);
-        return;
-      }
-
-      gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    }
-  `;
-
-  const vertexShader = compileShader(vertexShaderSrc, metaballGl.VERTEX_SHADER);
-  const fragmentShader = compileShader(fragmentShaderSrc, metaballGl.FRAGMENT_SHADER);
-
-  metaballProgram = metaballGl.createProgram();
-  if (!metaballProgram) return;
-
-  metaballGl.attachShader(metaballProgram, vertexShader);
-  metaballGl.attachShader(metaballProgram, fragmentShader);
-  metaballGl.linkProgram(metaballProgram);
-  metaballGl.useProgram(metaballProgram);
-
-  const vertexData = new Float32Array([
-    -1.0,  1.0,
-    -1.0, -1.0,
-     1.0,  1.0,
-     1.0, -1.0,
-  ]);
-
-  const vertexDataBuffer = metaballGl.createBuffer();
-  metaballGl.bindBuffer(metaballGl.ARRAY_BUFFER, vertexDataBuffer);
-  metaballGl.bufferData(metaballGl.ARRAY_BUFFER, vertexData, metaballGl.STATIC_DRAW);
-
-  const positionHandle = getAttribLocation(metaballProgram, 'position');
-  metaballGl.enableVertexAttribArray(positionHandle);
-  metaballGl.vertexAttribPointer(positionHandle, 2, metaballGl.FLOAT, false, 2 * 4, 0);
-
-  const metaballsHandle = getUniformLocation(metaballProgram, 'metaballs');
-
-  function loop() {
-    if (!metaballGl || !metaballProgram) return;
-
-    for (let i = 0; i < numMetaballs; i++) {
-      const metaball = metaballs[i];
-      metaball.x += metaball.vx;
-      metaball.y += metaball.vy;
-
-      if (metaball.x < metaball.r || metaball.x > width - metaball.r) metaball.vx *= -1;
-      if (metaball.y < metaball.r || metaball.y > height - metaball.r) metaball.vy *= -1;
-    }
-
-    const dataToSendToGPU = new Float32Array(3 * numMetaballs);
-    for (let i = 0; i < numMetaballs; i++) {
-      const baseIndex = 3 * i;
-      const mb = metaballs[i];
-      dataToSendToGPU[baseIndex + 0] = mb.x;
-      dataToSendToGPU[baseIndex + 1] = mb.y;
-      dataToSendToGPU[baseIndex + 2] = mb.r;
-    }
-    metaballGl.uniform3fv(metaballsHandle, dataToSendToGPU);
-
-    metaballGl.drawArrays(metaballGl.TRIANGLE_STRIP, 0, 4);
-    metaballAnimationId = requestAnimationFrame(loop);
-  }
-
-  function compileShader(shaderSource: string, shaderType: number) {
-    const shader = metaballGl!.createShader(shaderType);
-    if (!shader) throw new Error('Failed to create shader');
-
-    metaballGl!.shaderSource(shader, shaderSource);
-    metaballGl!.compileShader(shader);
-
-    if (!metaballGl!.getShaderParameter(shader, metaballGl!.COMPILE_STATUS)) {
-      throw new Error("Shader compile failed with: " + metaballGl!.getShaderInfoLog(shader));
-    }
-    return shader;
-  }
-
-  function getUniformLocation(program: WebGLProgram, name: string) {
-    const uniformLocation = metaballGl!.getUniformLocation(program, name);
-    if (uniformLocation === -1) {
-      throw new Error('Can not find uniform ' + name + '.');
-    }
-    return uniformLocation;
-  }
-
-  function getAttribLocation(program: WebGLProgram, name: string) {
-    const attributeLocation = metaballGl!.getAttribLocation(program, name);
-    if (attributeLocation === -1) {
-      throw new Error('Can not find attribute ' + name + '.');
-    }
-    return attributeLocation;
-  }
-
-  loop();
-}
-
-
-// Vanta.js Animation
-let vantaEffect: any = null
-
-const initVantaEffect = () => {
-    if (typeof window !== 'undefined' && (window as any).VANTA) {
-        vantaEffect = (window as any).VANTA.NET({
-            el: "#vanta-hero",
-            mouseControls: true,
-            touchControls: true,
-            gyroControls: false,
-            minHeight: 200.00,
-            minWidth: 200.00,
-            scale: 1.00,
-            scaleMobile: 1.00,
-            color: 0x3b82f6,
-            backgroundColor: 0x0f0f23,
-            points: 8.00,
-            maxDistance: 20.00,
-            spacing: 17.00
-        })
-    }
-}
-
-onMounted(() => {
-    // Initialize metaball animation after a short delay to ensure DOM is ready
-    setTimeout(() => {
-        initMetaballAnimation();
-    }, 100);
-})
-
-// Clean up animations when component unmounts
-onUnmounted(() => {
-    if (metaballAnimationId) {
-        cancelAnimationFrame(metaballAnimationId);
-    }
-    if (vantaEffect) {
-        vantaEffect.destroy()
-    }
-})
+// About Us Features data
+const aboutFeatures = [
+    {
+        icon: Code,
+        title: 'تصميم عصري',
+        description: 'واجهات مستخدم جذابة وعصرية',
+    },
+    {
+        icon: Shield,
+        title: 'حماية من الاختراق',
+        description: 'أمان عالي المستوى لحماية بياناتك',
+    },
+    {
+        icon: CheckCircle,
+        title: 'ميزات متكاملة',
+        description: 'حلول شاملة لجميع احتياجاتك',
+    },
+    {
+        icon: Wrench,
+        title: 'صيانة للثغرات مجانًا',
+        description: 'دعم فني ومتابعة مستمرة',
+    },
+    {
+        icon: Code,
+        title: 'إنشاء لوحة تحكم لك',
+        description: 'إدارة كاملة لموقعك أو تطبيقك',
+    },
+    {
+        icon: Clock,
+        title: '24/7 دعم',
+        description: 'فريق دعم متاح على مدار الساعة',
+    },
+]
 
 interface CompanyLogo {
     id: number;
@@ -272,131 +203,407 @@ const partners = computed(() => {
     <Head title="iTab - Leading Software Development Company" />
 
     <!-- Navigation Bar -->
-    <NavBar />
+    <NavBar textColor="white" />
 
     <div class="min-h-screen bg-white">
         <!-- Hero Section -->
-        <section class="relative min-h-screen flex items-center px-4 pt-16 bg-black overflow-hidden">
-            <!-- Metaball Animation Canvas -->
-            <canvas id="metaball-canvas" class="absolute inset-0 w-full h-full"></canvas>
-            <div class="max-w-7xl mx-auto w-full z-10 relative">
-                <div class="flex justify-center items-center">
-                    <!-- Content -->
-                    <div class="text-center max-w-4xl">
+        <section id="hero" class="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-950 via-blue-900 to-purple-900 overflow-hidden pt-20">
+            <!-- Animated Background -->
+            <div class="absolute inset-0">
+                <!-- Grid Pattern -->
+                <div class="absolute inset-0 opacity-10">
+                    <div class="absolute inset-0" :style="{
+                        backgroundImage: `
+                            linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
+                            linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)
+                        `,
+                        backgroundSize: '60px 60px'
+                    }"></div>
+                </div>
 
-                        <!-- Tagline -->
-                        <div class="mb-12">
-                            <h2 class="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-8 leading-tight text-center museo-moderno">
-                                {{ t('heroTitle') }}<br>
-                                <span style="color: #ff751f;">{{ t('heroTitleHighlight') }}</span>
-                            </h2>
-                            <p class="text-2xl md:text-3xl lg:text-4xl text-gray-300 leading-relaxed text-center">
-                                {{ t('heroSubtitle') }}
+                <!-- Gradient Orbs -->
+                <div class="absolute top-20 -left-20 w-96 h-96 rounded-full bg-blue-500/30 blur-3xl animate-orb-1"></div>
+                <div class="absolute top-40 -right-20 w-96 h-96 rounded-full bg-purple-500/30 blur-3xl animate-orb-2"></div>
+                <div class="absolute bottom-20 left-1/2 w-96 h-96 rounded-full bg-cyan-500/20 blur-3xl animate-orb-3"></div>
+            </div>
+
+            <div class="container mx-auto px-4 py-20 relative z-10">
+                <div class="max-w-5xl mx-auto">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        <!-- Left Content -->
+                        <div class="text-white text-center lg:text-right">
+                            <div class="animate-fade-in-up">
+                                <!-- Badge -->
+                                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-6 hover:scale-105 transition-transform cursor-pointer">
+                                    <Sparkles class="w-4 h-4 text-yellow-400" />
+                                    <span class="text-sm">الحل الأمثل لمشروعك الرقمي</span>
+                                </div>
+
+                                <h1 class="mb-6 text-4xl md:text-5xl lg:text-6xl leading-tight">
+                                    <span class="block mb-2">تحويل الأفكار</span>
+                                    <span class="block bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                                        إلى التميز الرقمي
+                                    </span>
+                                </h1>
+                            </div>
+
+                            <p class="mb-10 max-w-2xl mx-auto lg:mx-0 opacity-90 text-lg animate-fade-in-up-delay-1">
+                                نصمم ونطور حلول ويب وموبايل مبتكرة تمكن الشركات من النمو والتفاعل والريادة من خلال التكنولوجيا.
                             </p>
 
-                            <!-- Technology Icons -->
-                            <div class="mt-12 flex flex-wrap justify-center items-center gap-6 md:gap-8">
-                                <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 hover:bg-white/20 transition-all duration-300 hover:scale-110">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS" class="w-6 h-6">
-                                    <span class="text-white text-sm font-medium">AWS</span>
+                            <div class="flex gap-4 justify-center lg:justify-start flex-wrap animate-fade-in-up-delay-2">
+                                <Button size="lg" class="bg-white text-blue-950 hover:bg-gray-100 shadow-2xl group">
+                                    ابدأ مشروعك الآن
+                                    <ArrowRight class="mr-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                                </Button>
+                            </div>
+
+                            <!-- Stats -->
+                            <div class="grid grid-cols-3 gap-6 mt-12 pt-12 border-t border-white/20 animate-fade-in-up-delay-3">
+                                <div 
+                                    v-for="stat in [
+                                        { number: '500+', label: 'عميل' },
+                                        { number: '1000+', label: 'مشروع' },
+                                        { number: '98%', label: 'رضا العملاء' },
+                                    ]"
+                                    :key="stat.label"
+                                    class="text-center hover:scale-110 transition-transform cursor-pointer"
+                                >
+                                    <div class="text-3xl font-bold mb-1">{{ stat.number }}</div>
+                                    <div class="text-sm opacity-70">{{ stat.label }}</div>
                                 </div>
-                                <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 hover:bg-white/20 transition-all duration-300 hover:scale-110">
-                                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-original.svg" alt="Laravel" class="w-6 h-6">
-                                    <span class="text-white text-sm font-medium">Laravel</span>
-                                </div>
-                                <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 hover:bg-white/20 transition-all duration-300 hover:scale-110">
-                                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" alt="PHP" class="w-6 h-6">
-                                    <span class="text-white text-sm font-medium">PHP</span>
-                                </div>
-                                <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 hover:bg-white/20 transition-all duration-300 hover:scale-110">
-                                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React" class="w-6 h-6">
-                                    <span class="text-white text-sm font-medium">React</span>
-                                </div>
-                                <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 hover:bg-white/20 transition-all duration-300 hover:scale-110">
-                                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg" alt="Vue.js" class="w-6 h-6">
-                                    <span class="text-white text-sm font-medium">Vue.js</span>
-                                </div>
-                                <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 hover:bg-white/20 transition-all duration-300 hover:scale-110">
-                                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js" class="w-6 h-6">
-                                    <span class="text-white text-sm font-medium">Node.js</span>
-                                </div>
-                                <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 hover:bg-white/20 transition-all duration-300 hover:scale-110">
-                                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flutter/flutter-original.svg" alt="Flutter" class="w-6 h-6">
-                                    <span class="text-white text-sm font-medium">Flutter</span>
-                                </div>
-                                <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 hover:bg-white/20 transition-all duration-300 hover:scale-110">
-                                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python" class="w-6 h-6">
-                                    <span class="text-white text-sm font-medium">Python</span>
+                        </div>
+                    </div>
+
+                        <!-- Right - 3D Card Animation -->
+                        <div class="relative hidden lg:block animate-scale-in">
+                            <!-- Main Card -->
+                            <div class="relative">
+                                <div class="relative w-full h-96 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-8 overflow-hidden animate-card-float">
+                                    <!-- Floating Icons Inside Card -->
+                                    <div
+                                        v-for="(item, index) in floatingIcons"
+                                        :key="index"
+                                        :class="`absolute w-16 h-16 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center shadow-lg`"
+                                        :style="{
+                                            left: `${20 + index * 25}%`,
+                                            top: `${20 + index * 20}%`,
+                                            animation: `float-icon ${8 + index}s ease-in-out infinite`,
+                                            animationDelay: `${item.delay}s`
+                                        }"
+                                    >
+                                        <component :is="item.icon" class="w-8 h-8 text-white" />
+                                    </div>
+
+                                    <!-- Code Lines Animation -->
+                                    <div class="space-y-3 mt-20">
+                                        <div 
+                                            v-for="(width, index) in [60, 80, 70, 90, 65]"
+                                            :key="index"
+                                            class="h-3 bg-gradient-to-r from-blue-400/30 to-purple-400/30 rounded-full code-line"
+                                            :style="{
+                                                '--target-width': `${width}%`,
+                                                '--delay': `${0.5 + index * 0.1}s`,
+                                                '--pulse-delay': `${2 + index * 0.1}s`
+                                            }"
+                                        ></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
-
                 </div>
             </div>
 
             <!-- Scroll Indicator -->
-            <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-                <div class="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
-                    <div class="w-1 h-3 bg-white/50 rounded-full mt-2 animate-pulse"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Our Partners Section -->
-        <section class="py-20 px-4 bg-white">
-            <div class="max-w-7xl mx-auto">
-                <div class="text-center mb-16">
-                    <h2 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6">{{ t('partnersTitle') }}</h2>
-                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                        {{ t('partnersSubtitle') }}
-                    </p>
-                </div>
-
-                <!-- Partners Grid -->
-                <div v-if="partners.length > 0" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-8 md:gap-12">
-                    <div 
-                        v-for="partner in partners" 
-                        :key="partner.logo"
-                        class="group flex items-center justify-center p-4 transition-all duration-300 hover:scale-110"
-                    >
-                        <img 
-                            :src="partner.logo"
-                            :alt="`${partner.name} logo`"
-                            class="max-h-20 max-w-full object-contain opacity-80 group-hover:opacity-100 transition-all duration-300"
-                            loading="lazy"
-                        >
-                    </div>
-                </div>
-                <!-- Empty State -->
-                <div v-else class="text-center py-12 text-gray-500">
-                    <p>No company logos available yet.</p>
-                </div>
-
-                <!-- Trust Badge -->
-                <div class="text-center mt-12">
-                    <div class="inline-flex items-center gap-2 bg-gray-100 backdrop-blur-sm rounded-full px-6 py-3 border border-gray-200">
-                        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                        <span class="text-gray-700 text-xs font-medium">{{ t('partnersTrusted') }}</span>
-                    </div>
+            <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-scroll-indicator">
+                <div class="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-2">
+                    <div class="w-1.5 h-3 bg-white rounded-full animate-scroll-dot"></div>
                 </div>
             </div>
         </section>
 
         <!-- Our Services -->
-        <section class="py-20 px-4 bg-gray-50">
-            <div class="max-w-7xl mx-auto">
-                <!-- Our Services -->
-                <div class="text-center mb-16">
-                    <h2 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6">{{ t('servicesTitle') }}</h2>
-                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                        {{ t('servicesSubtitle') }}
+        <section id="services" class="py-20 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-16 animate-fade-in-up">
+                    <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">خدماتنا</h2>
+                    <p class="opacity-70 text-lg md:text-xl">
+                        كل ذلك في مكان واحد<br />
+                        مدعوم بالتكنولوجيا
                     </p>
                 </div>
 
-                <!-- Services Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div
+                        v-for="(service, index) in services"
+                        :key="service.title"
+                        class="service-card"
+                        :style="{ animationDelay: `${index * 0.1}s` }"
+                    >
+                        <Card class="p-6 h-full hover:shadow-lg transition-shadow duration-300 border-2 hover:border-blue-500">
+                            <div class="w-14 h-14 rounded-lg flex items-center justify-center mb-4" style="background-color: #4b3da6;">
+                                <component :is="service.icon" class="w-7 h-7 text-white" />
+                        </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-3">{{ service.title }}</h3>
+                            <p class="opacity-70 text-gray-600">{{ service.description }}</p>
+                        </Card>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ready Projects -->
+        <section id="projects" class="py-20 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-16 animate-fade-in-up">
+                    <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">المشاريع الجاهزة</h2>
+                    <p class="opacity-70 max-w-2xl mx-auto text-lg md:text-xl">
+                        حلول جاهزة وقابلة للتخصيص بأسعار تنافسية
+                    </p>
+                    </div>
+                    
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                    <div
+                        v-for="(project, index) in readyProjects"
+                        :key="project.title"
+                        class="project-card"
+                        :style="{ animationDelay: `${index * 0.1}s` }"
+                    >
+                        <Card class="p-0 h-full flex flex-col hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+                            <!-- Project Image -->
+                            <div class="w-full h-48 overflow-hidden bg-gray-200">
+                                <img
+                                    :src="project.image"
+                                    :alt="project.title"
+                                    class="w-full h-full object-cover"
+                                    @error="(e) => { (e.target as HTMLImageElement).src = '/asset/bk.jpg' }"
+                                />
+                    </div>
+                            
+                            <div class="p-6 flex flex-col flex-grow">
+                                <h3 class="text-xl font-bold text-gray-900 mb-3">{{ project.title }}</h3>
+                                <p class="opacity-70 text-gray-600 mb-4">{{ project.description }}</p>
+                            
+                            <div class="mb-4">
+                                <div class="flex items-baseline gap-1 mb-2">
+                                    <span class="text-3xl font-bold text-blue-600">{{ project.price }}</span>
+                                    <span class="opacity-70">ريال</span>
+                </div>
+                </div>
+
+                            <ul class="space-y-2 mb-6 flex-grow">
+                                <li 
+                                    v-for="feature in project.features"
+                                    :key="feature"
+                                    class="flex items-center gap-2"
+                                >
+                                    <div class="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                                        <div class="w-2 h-2 rounded-full bg-blue-600"></div>
+                    </div>
+                                    <span class="opacity-70 text-gray-600">{{ feature }}</span>
+                                </li>
+                            </ul>
+
+                                <Button class="w-full text-white mt-auto" style="background-color: #4b3da6;" onmouseover="this.style.backgroundColor='#3d2d85'" onmouseout="this.style.backgroundColor='#4b3da6'">
+                                    اطلب الآن
+                                    <ArrowRight class="mr-2 h-4 w-4" />
+                                </Button>
+                    </div>
+                        </Card>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- App Section -->
+        <section class="py-20 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+                    <div class="app-section-left animate-slide-in-left">
+                        <div class="flex items-center gap-2 mb-4">
+                            <Sparkles class="w-6 h-6 text-blue-600" />
+                            <span class="text-blue-600 font-medium">تطبيقات احترافية</span>
+                </div>
+
+                        <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+                            احصل على تطبيقك<br />
+                            بتصميم عصري
+                        </h2>
+                        
+                        <p class="mb-6 opacity-70 text-lg text-gray-600">
+                            نقوم بتطوير تطبيقات الهاتف والويب باستخدام أحدث التقنيات والأدوات، مع التركيز على تجربة المستخدم والأداء العالي.
+                        </p>
+
+                        <ul class="space-y-3 mb-8">
+                            <li 
+                                v-for="item in [
+                                    'تصميم واجهات مستخدم جذابة',
+                                    'أداء سريع وموثوق',
+                                    'متوافق مع جميع الأجهزة',
+                                    'دعم فني متواصل'
+                                ]"
+                                :key="item"
+                                class="flex items-center gap-3"
+                            >
+                                <div class="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center flex-shrink-0">
+                                    <div class="w-2 h-2 rounded-full bg-white"></div>
+                        </div>
+                                <span class="text-gray-700">{{ item }}</span>
+                            </li>
+                        </ul>
+
+                        <Button size="lg" class="text-white hover:opacity-90 transition-opacity" style="background-color: #4b3da6;">
+                            <Smartphone class="ml-2 h-5 w-5" />
+                            ابدأ تطبيقك الآن
+                        </Button>
+                    </div>
+                    
+                    <div class="relative app-section-right animate-slide-in-right">
+                        <div class="relative rounded-2xl overflow-hidden shadow-2xl">
+                            <img
+                                src="/asset/mob.png"
+                                alt="Mobile App Development"
+                                class="w-full h-auto"
+                                @error="(e) => { (e.target as HTMLImageElement).src = '/asset/bk.jpg' }"
+                            />
+                    </div>
+                    
+                        <!-- Decorative Elements -->
+                        <div class="absolute -z-10 -top-6 -right-6 w-40 h-40 rounded-full bg-gradient-to-br from-blue-400 to-purple-400 opacity-20 blur-3xl"></div>
+                        <div class="absolute -z-10 -bottom-6 -left-6 w-40 h-40 rounded-full bg-gradient-to-br from-purple-400 to-blue-400 opacity-20 blur-3xl"></div>
+                        </div>
+                    </div>
+            </div>
+        </section>
+
+        <!-- Website Section -->
+        <section class="py-20 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+                    <div class="relative order-2 lg:order-1 website-section-left animate-slide-in-left">
+                        <div class="relative rounded-2xl overflow-hidden shadow-2xl">
+                            <img
+                                src="/asset/website.png"
+                                alt="Web Design"
+                                class="w-full h-auto"
+                                @error="(e) => { (e.target as HTMLImageElement).src = '/asset/bk.jpg' }"
+                            />
+                        </div>
+
+                        <!-- Decorative Elements -->
+                        <div class="absolute -z-10 -top-6 -left-6 w-40 h-40 rounded-full bg-gradient-to-br from-gray-400 to-gray-600 opacity-20 blur-3xl"></div>
+                    </div>
+                    
+                    <div class="order-1 lg:order-2 website-section-right animate-slide-in-right">
+                        <div class="flex items-center gap-2 mb-4">
+                            <Globe class="w-6 h-6 text-gray-900" />
+                            <span class="text-gray-900 font-medium">مواقع احترافية</span>
+                        </div>
+
+                        <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+                            فرصتك للحصول<br />
+                            على موقع متكامل
+                        </h2>
+                        
+                        <p class="mb-6 opacity-70 text-lg text-gray-600">
+                            نبني مواقع ويب عصرية ومتجاوبة مع جميع الأجهزة، مع التركيز على السرعة والأمان وتجربة المستخدم المتميزة.
+                        </p>
+
+                        <div class="grid grid-cols-2 gap-4 mb-8">
+                            <div 
+                                v-for="item in [
+                                    { label: 'تصميم متجاوب', value: '100%' },
+                                    { label: 'أداء عالي', value: 'A+' },
+                                    { label: 'أمان قوي', value: 'SSL' },
+                                    { label: 'SEO محسن', value: '⭐' },
+                                ]"
+                                :key="item.label"
+                                class="p-4 bg-gray-50 rounded-lg"
+                            >
+                                <div class="text-2xl font-bold text-gray-900 mb-1">{{ item.value }}</div>
+                                <div class="opacity-70 text-gray-600">{{ item.label }}</div>
+                            </div>
+                            </div>
+
+                        <Button size="lg" class="text-white hover:opacity-90 transition-opacity" style="background-color: #4b3da6;">
+                            اطلب موقعك الآن
+                            <ArrowRight class="mr-2 h-5 w-5" />
+                        </Button>
+                </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Goals Section -->
+        <section class="py-20 bg-gradient-to-br from-blue-950 via-blue-900 to-purple-900 text-white relative overflow-hidden">
+            <!-- Background Pattern -->
+            <div class="absolute inset-0 opacity-5">
+                <div class="absolute inset-0" :style="{
+                    backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
+                    backgroundSize: '40px 40px'
+                }"></div>
+            </div>
+
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="text-center mb-16 animate-fade-in-up">
+                    <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">هدفنا لعام 2026</h2>
+                    <p class="opacity-90 max-w-2xl mx-auto text-lg">
+                        نسعى لتحقيق التميز والريادة في مجال التكنولوجيا وتقديم أفضل الحلول البرمجية لعملائنا
+                    </p>
+                            </div>
+
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
+                    <div
+                        v-for="(goal, index) in goals"
+                        :key="goal.label"
+                        class="text-center goal-item"
+                        :style="{ animationDelay: `${index * 0.1}s` }"
+                    >
+                        <div class="w-20 h-20 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center mx-auto mb-4 border border-white/20">
+                            <component :is="goal.icon" class="w-10 h-10 text-white" />
+                        </div>
+                        <div class="text-4xl font-bold mb-2">{{ goal.number }}</div>
+                        <div class="opacity-80">{{ goal.label }}</div>
+                </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Us Section -->
+        <section id="about" class="py-20 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-16 max-w-3xl mx-auto animate-fade-in-up">
+                    <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+                        فرصتك لنقل فكرتك إلى الإنترنت وتطويرها
+                    </h2>
+                    <p class="opacity-70 text-lg">
+                        مجموعة شباب ذوي خبرات في أهم المجالات التقنية، عملنا على مئات المشاريع التقنية، منصة إكتمل هي المكان الصحيح لنقل فكرتك إلى الإنترنت وإدارتها وإيصالها إلى أكبر عدد من الناس بأحدث الوسائل.
+                    </p>
+                        </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                    <div
+                        v-for="(feature, index) in aboutFeatures"
+                        :key="feature.title"
+                        class="about-feature-card"
+                        :style="{ animationDelay: `${index * 0.1}s` }"
+                    >
+                        <Card class="p-6 h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                            <div class="w-12 h-12 rounded-lg flex items-center justify-center mb-4" style="background-color: #4b3da6;">
+                                <component :is="feature.icon" class="w-6 h-6 text-white" />
+                    </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">{{ feature.title }}</h3>
+                            <p class="opacity-70 text-gray-600">{{ feature.description }}</p>
+                        </Card>
+                </div>
+                </div>
+            </div>
+        </section>
+
+                <!-- Legacy Services Grid (Hidden) -->
+        <section class="py-20 px-4 bg-white hidden">
+            <div class="max-w-7xl mx-auto">
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <Link href="/services/mobile-development" class="bg-gradient-to-br from-blue-50 to-purple-50 backdrop-blur-lg rounded-3xl p-8 border border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all duration-300 group cursor-pointer">
                         <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-gray-200 transition-colors">
@@ -1000,167 +1207,42 @@ const partners = computed(() => {
             </div>
         </section>
 
-        <!-- Trust Signals -->
+        <!-- Our Partners Section -->
         <section class="py-20 px-4 bg-white">
             <div class="max-w-7xl mx-auto">
                 <div class="text-center mb-16">
-                    <h2 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6">{{ t('trustTitle') }}</h2>
+                    <h2 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6">{{ t('partnersTitle') }}</h2>
                     <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                        {{ t('trustSubtitle') }}
+                        {{ t('partnersSubtitle') }}
                     </p>
                         </div>
 
-                <div class="grid md:grid-cols-3 gap-8">
-                    <!-- NDA Confidentiality -->
-                    <div class="group relative bg-gradient-to-br from-blue-50 to-purple-50 backdrop-blur-lg rounded-3xl p-8 border-2 border-gray-200 hover:border-blue-300 hover:shadow-xl transition-all duration-300 overflow-hidden">
-                        <!-- Background Pattern -->
-                        <div class="absolute inset-0 opacity-5">
-                            <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500 rounded-full blur-3xl"></div>
-                            <div class="absolute bottom-0 left-0 w-24 h-24 bg-purple-500 rounded-full blur-3xl"></div>
+                <!-- Partners Grid -->
+                <div v-if="partners.length > 0" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-8 md:gap-12">
+                    <div 
+                        v-for="partner in partners" 
+                        :key="partner.logo"
+                        class="group flex items-center justify-center p-6 transition-all duration-300 hover:scale-110"
+                    >
+                        <img 
+                            :src="partner.logo"
+                            :alt="`${partner.name} logo`"
+                            class="max-h-32 max-w-full object-contain opacity-80 group-hover:opacity-100 transition-all duration-300"
+                            loading="lazy"
+                        >
                         </div>
-                        
-                        <div class="relative z-10">
-                            <div class="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-gray-200 transition-colors shadow-lg">
-                                <FileLock class="w-10 h-10 text-gray-700" />
                     </div>
-                            
-                            <div class="text-center mb-4">
-                                <BadgeCheck class="w-8 h-8 text-green-500 mx-auto mb-2" />
-                                <h3 class="text-2xl font-bold text-gray-900 mb-3">{{ t('trustNDA') }}</h3>
+                <!-- Empty State -->
+                <div v-else class="text-center py-12 text-gray-500">
+                    <p>No company logos available yet.</p>
                 </div>
                             
-                            <p class="text-gray-600 text-center leading-relaxed mb-6">
-                                {{ t('trustNDADesc') }}
-                            </p>
-                            
-                            <div class="space-y-3">
-                                <div class="flex items-center gap-3 bg-white/60 rounded-lg p-3">
-                                    <CheckCircle class="w-5 h-5 text-green-500 flex-shrink-0" />
-                                    <span class="text-sm text-gray-700 font-medium">{{ t('trustNDALegal') }}</span>
+                <!-- Trust Badge -->
+                <div class="text-center mt-12">
+                    <div class="inline-flex items-center gap-2 bg-gray-100 backdrop-blur-sm rounded-full px-6 py-3 border border-gray-200">
+                        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        <span class="text-gray-700 text-xs font-medium">{{ t('partnersTrusted') }}</span>
             </div>
-                                <div class="flex items-center gap-3 bg-white/60 rounded-lg p-3">
-                                    <CheckCircle class="w-5 h-5 text-green-500 flex-shrink-0" />
-                                    <span class="text-sm text-gray-700 font-medium">{{ t('trustNDAStrict') }}</span>
-                                </div>
-                                <div class="flex items-center gap-3 bg-white/60 rounded-lg p-3">
-                                    <CheckCircle class="w-5 h-5 text-green-500 flex-shrink-0" />
-                                    <span class="text-sm text-gray-700 font-medium">{{ t('trustNDASecure') }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Secure Development Practices -->
-                    <div class="group relative bg-gradient-to-br from-blue-50 to-purple-50 backdrop-blur-lg rounded-3xl p-8 border-2 border-gray-200 hover:border-blue-300 hover:shadow-xl transition-all duration-300 overflow-hidden">
-                        <!-- Background Pattern -->
-                        <div class="absolute inset-0 opacity-5">
-                            <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500 rounded-full blur-3xl"></div>
-                            <div class="absolute bottom-0 left-0 w-24 h-24 bg-purple-500 rounded-full blur-3xl"></div>
-                    </div>
-
-                        <div class="relative z-10">
-                            <div class="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-gray-200 transition-colors shadow-lg">
-                                <Shield class="w-10 h-10 text-gray-700" />
-                            </div>
-                            
-                            <div class="text-center mb-4">
-                                <BadgeCheck class="w-8 h-8 text-green-500 mx-auto mb-2" />
-                                <h3 class="text-2xl font-bold text-gray-900 mb-3">{{ t('trustSecure') }}</h3>
-                            </div>
-                            
-                            <p class="text-gray-600 text-center leading-relaxed mb-6">
-                                {{ t('trustSecureDesc') }}
-                            </p>
-                            
-                            <div class="space-y-3">
-                                <div class="flex items-center gap-3 bg-white/60 rounded-lg p-3">
-                                    <CheckCircle class="w-5 h-5 text-green-500 flex-shrink-0" />
-                                    <span class="text-sm text-gray-700 font-medium">{{ t('trustSecureCoding') }}</span>
-                                </div>
-                                <div class="flex items-center gap-3 bg-white/60 rounded-lg p-3">
-                                    <CheckCircle class="w-5 h-5 text-green-500 flex-shrink-0" />
-                                    <span class="text-sm text-gray-700 font-medium">{{ t('trustSecureAudits') }}</span>
-                                </div>
-                                <div class="flex items-center gap-3 bg-white/60 rounded-lg p-3">
-                                    <CheckCircle class="w-5 h-5 text-green-500 flex-shrink-0" />
-                                    <span class="text-sm text-gray-700 font-medium">{{ t('trustSecureEncryption') }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- GDPR / Data Protection -->
-                    <div class="group relative bg-gradient-to-br from-blue-50 to-purple-50 backdrop-blur-lg rounded-3xl p-8 border-2 border-gray-200 hover:border-blue-300 hover:shadow-xl transition-all duration-300 overflow-hidden">
-                        <!-- Background Pattern -->
-                        <div class="absolute inset-0 opacity-5">
-                            <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500 rounded-full blur-3xl"></div>
-                            <div class="absolute bottom-0 left-0 w-24 h-24 bg-purple-500 rounded-full blur-3xl"></div>
-                        </div>
-                        
-                        <div class="relative z-10">
-                            <div class="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-gray-200 transition-colors shadow-lg">
-                                <Lock class="w-10 h-10 text-gray-700" />
-                            </div>
-                            
-                            <div class="text-center mb-4">
-                                <BadgeCheck class="w-8 h-8 text-green-500 mx-auto mb-2" />
-                                <h3 class="text-2xl font-bold text-gray-900 mb-3">{{ t('trustGDPR') }}</h3>
-                            </div>
-                            
-                            <p class="text-gray-600 text-center leading-relaxed mb-6">
-                                {{ t('trustGDPRDesc') }}
-                            </p>
-                            
-                            <div class="space-y-3">
-                                <div class="flex items-center gap-3 bg-white/60 rounded-lg p-3">
-                                    <CheckCircle class="w-5 h-5 text-green-500 flex-shrink-0" />
-                                    <span class="text-sm text-gray-700 font-medium">{{ t('trustGDPRCompliant') }}</span>
-                                </div>
-                                <div class="flex items-center gap-3 bg-white/60 rounded-lg p-3">
-                                    <CheckCircle class="w-5 h-5 text-green-500 flex-shrink-0" />
-                                    <span class="text-sm text-gray-700 font-medium">{{ t('trustGDPRPrivacy') }}</span>
-                                </div>
-                                <div class="flex items-center gap-3 bg-white/60 rounded-lg p-3">
-                                    <CheckCircle class="w-5 h-5 text-green-500 flex-shrink-0" />
-                                    <span class="text-sm text-gray-700 font-medium">{{ t('trustGDPRDeletion') }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Additional Trust Badges -->
-                <div class="mt-16 pt-12 border-t border-gray-200">
-                    <div class="flex flex-wrap items-center justify-center gap-8">
-                        <div class="flex items-center gap-3 bg-white rounded-xl px-6 py-4 border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                            <FileCheck class="w-8 h-8 text-gray-700" />
-                        <div>
-                                <div class="font-semibold text-gray-900">{{ t('trustISO') }}</div>
-                                <div class="text-xs text-gray-500">{{ t('trustISOCompliant') }}</div>
-                                </div>
-                            </div>
-                        <div class="flex items-center gap-3 bg-white rounded-xl px-6 py-4 border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                            <Shield class="w-8 h-8 text-gray-700" />
-                            <div>
-                                <div class="font-semibold text-gray-900">{{ t('trustSSL') }}</div>
-                                <div class="text-xs text-gray-500">{{ t('trustSSLSecure') }}</div>
-                        </div>
-                        </div>
-                        <div class="flex items-center gap-3 bg-white rounded-xl px-6 py-4 border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                            <BadgeCheck class="w-8 h-8 text-gray-700" />
-                        <div>
-                                <div class="font-semibold text-gray-900">{{ t('trustCertified') }}</div>
-                                <div class="text-xs text-gray-500">{{ t('trustCertifiedStandards') }}</div>
-                                </div>
-                                </div>
-                        <div class="flex items-center gap-3 bg-white rounded-xl px-6 py-4 border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                            <Lock class="w-8 h-8 text-gray-700" />
-                            <div>
-                                <div class="font-semibold text-gray-900">{{ t('trustBackup') }}</div>
-                                <div class="text-xs text-gray-500">{{ t('trustBackupRegular') }}</div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
             </div>
         </section>
@@ -1240,6 +1322,301 @@ const partners = computed(() => {
 
 .animate-float {
     animation: float 3s ease-in-out infinite;
+}
+
+/* Hero Animations */
+@keyframes orb-1 {
+    0%, 100% { 
+        transform: scale(1) translate(0, 0); 
+    }
+    50% { 
+        transform: scale(1.2) translate(50px, 30px); 
+    }
+}
+
+@keyframes orb-2 {
+    0%, 100% { 
+        transform: scale(1) translate(0, 0); 
+    }
+    50% { 
+        transform: scale(1.3) translate(-50px, -30px); 
+    }
+}
+
+@keyframes orb-3 {
+    0%, 100% { 
+        transform: scale(1) rotate(0deg); 
+    }
+    50% { 
+        transform: scale(1.4) rotate(180deg); 
+    }
+    100% {
+        transform: scale(1) rotate(360deg);
+    }
+}
+
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scale-in {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes card-float {
+    0%, 100% { 
+        transform: translateY(0); 
+    }
+    50% { 
+        transform: translateY(-20px); 
+    }
+}
+
+@keyframes float-icon {
+    0%, 100% { 
+        transform: translate(0, 0) rotate(0deg);
+        opacity: 1;
+    }
+    33% { 
+        transform: translate(20px, -20px) rotate(120deg);
+        opacity: 0.9;
+    }
+    66% { 
+        transform: translate(-20px, 20px) rotate(240deg);
+        opacity: 0.9;
+    }
+}
+
+.code-line {
+    width: 0%;
+    animation: code-line-expand 1.5s ease-out forwards, code-line-pulse 3s ease-in-out infinite;
+    animation-delay: var(--delay, 0.5s), var(--pulse-delay, 2s);
+}
+
+@keyframes code-line-expand {
+    from {
+        width: 0%;
+    }
+    to {
+        width: var(--target-width, 60%);
+    }
+}
+
+@keyframes code-line-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+@keyframes badge-float-1 {
+    0%, 100% { 
+        transform: translateY(0); 
+    }
+    50% { 
+        transform: translateY(-10px); 
+    }
+}
+
+@keyframes badge-float-2 {
+    0%, 100% { 
+        transform: translateY(0); 
+    }
+    50% { 
+        transform: translateY(10px); 
+    }
+}
+
+@keyframes scroll-indicator {
+    0%, 100% { 
+        transform: translate(-50%, 0); 
+    }
+    50% { 
+        transform: translate(-50%, 10px); 
+    }
+}
+
+@keyframes scroll-dot {
+    0%, 100% { 
+        transform: translateY(0);
+        opacity: 1;
+    }
+    50% { 
+        transform: translateY(12px);
+        opacity: 0.3;
+    }
+}
+
+.animate-orb-1 {
+    animation: orb-1 8s ease-in-out infinite;
+}
+
+.animate-orb-2 {
+    animation: orb-2 10s ease-in-out infinite;
+}
+
+.animate-orb-3 {
+    animation: orb-3 12s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+    animation: fade-in-up 0.8s ease-out forwards;
+}
+
+.animate-fade-in-up-delay-1 {
+    animation: fade-in-up 0.8s ease-out 0.2s forwards;
+    opacity: 0;
+}
+
+.animate-fade-in-up-delay-2 {
+    animation: fade-in-up 0.8s ease-out 0.4s forwards;
+    opacity: 0;
+}
+
+.animate-fade-in-up-delay-3 {
+    animation: fade-in-up 0.8s ease-out 0.6s forwards;
+    opacity: 0;
+}
+
+.animate-scale-in {
+    animation: scale-in 1s ease-out 0.3s forwards;
+    opacity: 0;
+}
+
+.animate-card-float {
+    animation: card-float 4s ease-in-out infinite;
+}
+
+.animate-badge-float-1 {
+    animation: badge-float-1 3s ease-in-out infinite;
+}
+
+.animate-badge-float-2 {
+    animation: badge-float-2 3s ease-in-out 1.5s infinite;
+}
+
+.animate-scroll-indicator {
+    animation: scroll-indicator 2s ease-in-out infinite;
+}
+
+.animate-scroll-dot {
+    animation: scroll-dot 2s ease-in-out infinite;
+}
+
+/* Services Animations */
+.service-card {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: service-fade-in-up 0.6s ease-out forwards;
+}
+
+@keyframes service-fade-in-up {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Projects Animations */
+.project-card {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: project-fade-in-up 0.6s ease-out forwards;
+}
+
+@keyframes project-fade-in-up {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* App Section Animations */
+.app-section-left {
+    opacity: 0;
+    transform: translateX(-30px);
+    animation: slide-in-left 0.8s ease-out forwards;
+}
+
+.app-section-right {
+    opacity: 0;
+    transform: translateX(30px);
+    animation: slide-in-right 0.8s ease-out forwards;
+}
+
+@keyframes slide-in-left {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slide-in-right {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.animate-slide-in-left {
+    opacity: 0;
+    transform: translateX(-30px);
+    animation: slide-in-left 0.8s ease-out forwards;
+}
+
+.animate-slide-in-right {
+    opacity: 0;
+    transform: translateX(30px);
+    animation: slide-in-right 0.8s ease-out forwards;
+}
+
+.website-section-left,
+.website-section-right {
+    animation-delay: 0.2s;
+}
+
+/* Goals Animations */
+.goal-item {
+    opacity: 0;
+    transform: scale(0.8);
+    animation: goal-scale-in 0.6s ease-out forwards;
+}
+
+@keyframes goal-scale-in {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* About Features Animations */
+.about-feature-card {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: feature-fade-in-up 0.6s ease-out forwards;
+}
+
+@keyframes feature-fade-in-up {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Custom scrollbar for the modal */

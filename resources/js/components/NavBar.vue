@@ -16,13 +16,13 @@
                     <div class="ml-10 flex items-baseline space-x-8">
                         <Link href="/"
                               :class="textColorClass + ' hover:text-gray-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-white/10'">
-                            {{ t('navHome') }}
+                            الرئيسية
                         </Link>
 
                         <!-- Services Dropdown -->
                         <div class="relative" @mouseenter="isServicesDropdownOpen = true" @mouseleave="isServicesDropdownOpen = false">
                             <button :class="textColorClass + ' hover:text-gray-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-white/10 flex items-center gap-1'">
-                                {{ t('navServices') }}
+                                الخدمات
                                 <ChevronDown class="w-4 h-4 transition-transform duration-200" :class="isServicesDropdownOpen ? 'rotate-180' : ''" />
                             </button>
 
@@ -33,8 +33,8 @@
 
                                 <!-- Header -->
                                 <div class="bg-gradient-to-r from-blue-50 to-purple-50 px-6 py-4 border-b border-gray-100">
-                                    <h3 class="text-lg font-semibold text-gray-900">Our Services</h3>
-                                    <p class="text-sm text-gray-600 mt-1">Professional solutions for your business</p>
+                                    <h3 class="text-lg font-semibold text-gray-900">خدماتنا</h3>
+                                    <p class="text-sm text-gray-600 mt-1">حلول احترافية لعملك</p>
                                 </div>
 
                                 <!-- Services List -->
@@ -57,7 +57,7 @@
                                 <!-- Footer -->
                                 <div class="bg-gray-50/50 px-6 py-3 border-t border-gray-100">
                                     <Link href="/contact-us" class="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200">
-                                        Get a free consultation →
+                                        احصل على استشارة مجانية ←
                                     </Link>
                                 </div>
                             </div>
@@ -65,11 +65,11 @@
 
                         <Link href="/about-us"
                               :class="textColorClass + ' hover:text-gray-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-white/10'">
-                            {{ t('navAbout') }}
+                            من نحن
                         </Link>
                         <Link href="/contact-us"
                               :class="textColorClass + ' hover:text-gray-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-white/10'">
-                            {{ t('navContact') }}
+                            اتصل بنا
                         </Link>
                         
                         <!-- Language Switcher -->
@@ -122,7 +122,7 @@
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 <Link href="/"
                       class="text-gray-900 hover:text-gray-700 block px-3 py-2 rounded-lg text-base font-medium transition-colors duration-200 hover:bg-gray-100">
-                    {{ t('navHome') }}
+                    الرئيسية
                 </Link>
 
                 <!-- Services Section for Mobile -->
@@ -131,7 +131,7 @@
                         <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                         </svg>
-                        Our Services
+                        خدماتنا
                     </div>
                     <div class="space-y-2">
                         <Link v-for="service in services" :key="service.name" :href="service.href"
@@ -147,23 +147,23 @@
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                             </svg>
-                            Get a free consultation
+                            احصل على استشارة مجانية
                         </Link>
                     </div>
                 </div>
 
                 <Link href="/about-us"
                       class="text-gray-900 hover:text-gray-700 block px-3 py-2 rounded-lg text-base font-medium transition-colors duration-200 hover:bg-gray-100">
-                    {{ t('navAbout') }}
+                    من نحن
                 </Link>
                 <Link href="/contact-us"
                       class="text-gray-900 hover:text-gray-700 block px-3 py-2 rounded-lg text-base font-medium transition-colors duration-200 hover:bg-gray-100">
-                    {{ t('navContact') }}
+                    اتصل بنا
                 </Link>
                 
                 <!-- Language Switcher Mobile -->
                 <div class="px-3 py-2 border-t border-gray-200">
-                    <div class="text-gray-900 font-semibold text-sm mb-2">Language</div>
+                    <div class="text-gray-900 font-semibold text-sm mb-2">اللغة</div>
                     <div class="flex gap-2">
                         <button @click="changeLanguage('en')"
                                 :class="['flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center justify-center gap-2', currentLanguage === 'en' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200']">
@@ -229,13 +229,13 @@ const backgroundColorClass = computed(() => {
 })
 
 const services = [
-    { name: 'Web Development', href: '/services/web-development' },
-    { name: 'Mobile App Development', href: '/services/mobile-development' },
-    { name: 'Software Solutions', href: '/services/software-solutions' },
-    { name: 'Chatbot & Automation', href: '/services/chatbot-automation' },
-    { name: 'Digital Presence & Marketing', href: '/services/digital-marketing' },
-    { name: 'Cloud & DevOps Services', href: '/services/cloud-devops' },
-    { name: 'Consulting & Technical Support', href: '/services/consulting' }
+    { name: 'تطوير المواقع', href: '/services/web-development' },
+    { name: 'تطوير التطبيقات', href: '/services/mobile-development' },
+    { name: 'الحلول البرمجية', href: '/services/software-solutions' },
+    { name: 'المساعد الافتراضي والأتمتة', href: '/services/chatbot-automation' },
+    { name: 'الحضور الرقمي والتسويق', href: '/services/digital-marketing' },
+    { name: 'خدمات السحابة والـ DevOps', href: '/services/cloud-devops' },
+    { name: 'الاستشارات والدعم الفني', href: '/services/consulting' }
 ]
 </script>
 
