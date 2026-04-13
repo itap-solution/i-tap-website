@@ -288,6 +288,7 @@ export const en = {
   trustBackupRegular: "Regular Backups",
   footerCompany: "iTab",
   footerCopyright: "© 2024 iTab. All rights reserved.",
+  footerPrivacyPolicy: "Privacy Policy",
   navHome: "Home",
   navServices: "Services",
   navAbout: "About Us",
@@ -356,5 +357,55 @@ export const en = {
   promoMessage: "Create your app or website for only 999 SAR",
   promoSubtitle: "Now and for a limited time",
   promoButton: "Get Started",
-  promoClose: "Close"
+  promoClose: "Close",
+
+  // Privacy Policy page
+  privacyMetaTitle: "Privacy Policy - iTab",
+  privacyHeroTitle: "Privacy Policy",
+  privacyUpdated: "Last updated: April 13, 2026",
+  privacyS1Title: "1. Introduction",
+  privacyS1Text:
+    'This Privacy Policy explains how iTab ("we", "us", or "our") collects, uses, stores, and protects information when you visit our website, use our services, or communicate with us. By accessing or using our services, you acknowledge the practices described in this policy.',
+  privacyS2Title: "2. Information We Collect",
+  privacyS2Intro: "We may collect the following categories of information:",
+  privacyS2a:
+    "Contact and identity details you voluntarily provide (such as name, email address, phone number, and company name).",
+  privacyS2b:
+    "Technical and usage data, including IP address, browser type, device information, pages viewed, and general location inferred from IP.",
+  privacyS2c: "Information you submit through contact forms, inquiry flows, or chat features on our website.",
+  privacyS2d: "Data collected via cookies and similar technologies, as described in Section 4.",
+  privacyS3Title: "3. How We Use Your Information",
+  privacyS3Intro: "We use personal information to:",
+  privacyS3a: "Respond to requests, prepare proposals, and deliver the software and consulting services you ask for.",
+  privacyS3b: "Operate, secure, and improve our website, communications, and overall client experience.",
+  privacyS3c:
+    "Send service-related messages and, where permitted by law, marketing communications; you may opt out where applicable.",
+  privacyS3d: "Meet legal and regulatory requirements, enforce our agreements, and protect iTab, our clients, and the public.",
+  privacyS4Title: "4. Cookies and Similar Technologies",
+  privacyS4Text:
+    "We use cookies and similar technologies to remember preferences, measure traffic, and understand how visitors use our site. You can manage cookies through your browser settings; disabling cookies may limit certain functionality.",
+  privacyS5Title: "5. Sharing and Disclosure",
+  privacyS5Text:
+    "We do not sell your personal information. We may share data with trusted processors (for example hosting, analytics, email, or support tools) who are bound by confidentiality and process data only on our instructions. We may also disclose information when required by law or when necessary to protect our rights, safety, and security.",
+  privacyS6Title: "6. International Transfers",
+  privacyS6Text:
+    "If you access our services from outside the country where we operate, your information may be processed in other jurisdictions where we or our providers maintain systems. Where required, we apply appropriate safeguards consistent with applicable law.",
+  privacyS7Title: "7. Data Retention",
+  privacyS7Text:
+    "We retain personal information only as long as needed for the purposes described in this policy, to meet legal or contractual obligations, or to resolve disputes, unless a longer period is required or permitted by law.",
+  privacyS8Title: "8. Security",
+  privacyS8Text:
+    "We implement reasonable technical and organizational measures intended to protect personal information against unauthorized access, alteration, disclosure, or destruction. No online transmission is completely secure; please use strong passwords and caution when sharing sensitive data.",
+  privacyS9Title: "9. Your Rights",
+  privacyS9Text:
+    "Depending on your jurisdiction, you may have rights to access, correct, delete, or restrict processing of your personal data, or to object to certain processing. To exercise these rights, contact us using the details below. You may also have the right to complain to a data protection authority.",
+  privacyS10Title: "10. Children's Privacy",
+  privacyS10Text:
+    "Our services are not directed to individuals under 16, and we do not knowingly collect personal information from children. If you believe we have collected such data, please contact us and we will take steps to delete it where appropriate.",
+  privacyS11Title: "11. Changes to This Policy",
+  privacyS11Text:
+    'We may update this Privacy Policy from time to time. The revised version will be posted on this page with an updated "Last updated" date. We encourage you to review this policy periodically.',
+  privacyS12Title: "12. Contact Us",
+  privacyS12Text:
+    "For questions about this Privacy Policy or our data practices, contact us at info@itap-tech.com or via the details on our Contact page."
 }

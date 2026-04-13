@@ -1295,6 +1295,14 @@ const partners = computed(() => {
                         </a>
                     </div>
 
+                    <!-- Legal -->
+                    <div class="flex flex-wrap items-center justify-center gap-2 text-sm">
+                        <Link href="/privacy-policy"
+                              class="text-gray-400 hover:text-white transition-colors duration-200">
+                            {{ t('footerPrivacyPolicy') }}
+                        </Link>
+                    </div>
+
                     <!-- Copyright -->
                     <div class="text-gray-400 text-sm">
                         {{ t('footerCopyright') }}
